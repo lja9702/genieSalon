@@ -36,20 +36,42 @@
        var map = new olleh.maps.Map(document.getElementById('map_div'), mapOpts);
      }
      window.onload = initialize;
+     
+     
+    
+     function func_print(){
+    	
+    	
+    	var jsonStr = JSON.stringify(jsonObj);
+    	
+    	document.getElementById("result").innerHTML= jsonStr;
+     }
+     
    </script>
  </head>
  <body>
  	<table id="full">
  	<tr>
  	<td style="width:50%;">
-   <div id="map_div"></div>
+   <div id="map_div">
+ 
+   </div>
    </td>
    <td>
    
-   <div id="info_div"></div>
+   <div id="info_div">
+   
+   
+   <label id="result"></label>
+   
+   
+   
+   </div>
    
    </td>
    </tr>
    </table>
+   
+  
  </body>
 </html>
