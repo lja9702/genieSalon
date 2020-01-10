@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[220]:
 
 
 import cv2,re,sys
@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 from xml.etree.ElementTree import parse
+from PIL import Image
 
 
 # 입력 얼굴사진 지정하기
@@ -21,7 +22,7 @@ plt.imshow(img)
 plt.show()
 
 
-# In[2]:
+# In[221]:
 
 
 def findFacetone(r,g,b):
@@ -38,13 +39,13 @@ def findFacetone(r,g,b):
         return "warm"
 
 
-# In[3]:
+# In[222]:
 
 
 # 출력 파일 이름
 output_file = re.sub(r'\.jpg|jpeg|PNG$', '-output.jpg', image_file)
 # 캐스케이드 파일의 경로 지정하기
-cascade_file = "haarcascade_frontalface_alt.xml"
+cascade_file = "haarcascade_frontalface.xml"
 # 이미지 읽어 들이기
 image = cv2.imread(image_file)
 # 그레이스케일로 변환하기
@@ -54,7 +55,7 @@ cascade = cv2.CascadeClassifier(cascade_file)
 # 얼굴 인식 실행하기
 # detectMultiScale - 얼굴 인식. minSize 이하의 크기는 무시. 너무 작게 지정하면 배경 등을 얼굴로 잘못 인식하게 된다.
 face_list = cascade.detectMultiScale(image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(150, 150))
-if len(face_list) ==1:
+if len(face_list) == 1:
     # 인식한 부분 표시하기
     print(face_list)
     color = (0, 0, 255)
@@ -64,11 +65,9 @@ if len(face_list) ==1:
         #사각형 부분 자르기 아래의 출력 추가외는 관계없다
         #img_clone=img[y:y+h,x:x+w]
         y1=int(y+h*(1/2))
-        y2=int(y+h*(13/16))
-        x1=int(x+h*(3/16))
-        x2=int(x+h*(1/2))
+        x1=int(x+h*(1/2))
         h1=int(h*1/4)
-        img_clone=img[y1-h1:y1+h1,x2-h1:x2+h1]
+        img_clone=img[y1-h1:y1+h1,x1-h1:x1+h1]
         #원래 파일에 사각형 출력 추가
         cv2.rectangle(img, (x, y), (x+w, y+h), color, thickness=1)
     # 파일로 출력하기
@@ -79,7 +78,7 @@ plt.imshow(img_clone)
 plt.show()
 
 
-# In[4]:
+# In[223]:
 
 
 # 사진의 RGB 평균값 구하기
@@ -118,6 +117,7 @@ else:
     print("웜톤")
     yourtone.append("웜톤")
         
+
         
         
 print(yourtone)
@@ -125,8 +125,11 @@ plt.imshow(img)
 plt.show()
 
 
-# In[5]:
+# In[224]:
 
+
+import random
+from xml.etree.ElementTree import parse
 
 #추천 머리색 추천
 
@@ -153,23 +156,74 @@ for i in range(0,len(haircolor_Data[0])):
     temp=findFacetone(haircolor_Data[1][i],haircolor_Data[2][i],haircolor_Data[3][i])
     haircolor_tone.append(temp)
 haircolor_Data.append(haircolor_tone)
+haircolor_Data=[list(x) for x in zip(*haircolor_Data)]
+
+# haircolor_Data => 이름[i][0],R[i][1],G[i][2],B[i][3],톤구분[i][4](i는 순서)
 
 
-# haircolor_Data => 이름[0][i],R[1][i],G[2][i],B[3][i],톤구분[4][i](i는 순서)
-print(haircolor_Data)
+warmtone=[]
+cooltone=[]
+
+for tone in haircolor_Data:
+    if(tone[4]=="cool"):
+        cooltone.append(tone)
+    else:
+        warmtone.append(tone)
+
+#RGB 형식 변환 255,255,255 에서 FFFFFF으로
+for tone in cooltone:
+    tone[1:4]=["#"+str(hex(int(tone[1])))[2:]+str(hex(int(tone[2])))[2:]+str(hex(int(tone[3])))[2:]]
+    del tone[2]
+
+
+for tone in warmtone:
+    tone[1:4]=["#"+str(hex(int(tone[1])))[2:]+str(hex(int(tone[2])))[2:]+str(hex(int(tone[3])))[2:]]
+    del tone[2]
+    
+print(cooltone)
+print(warmtone)
 
 
 
-# In[ ]:
+if yourtone[0]=='쿨톤':
+    reco_tone=random.sample(cooltone,5)
+else:
+    reco_tone=random.sample(warmtone,5)
+    
+
+
+print(reco_tone)
+
+
+# In[227]:
+
+
+from PIL import Image
 
 
 
+background = Image.open("test1.jpg")
 
 
-# In[91]:
+foreground = Image.open("hair.png")
 
 
-#결과는 String으로 반환한다.
+foreground_resize=foreground.resize((face_list[0][2],face_list[0][3]))
+
+print(face_list[0][0])
+
+#background.paste(foreground, (face_list[0][0],face_list[0][1]))
+background.paste(foreground_resize, (face_list[0][0],face_list[0][1]))
+background.show()
+
+
+background.save('hiarpaste_result.jpg')
+
+
+# In[226]:
+
+
+#결과는 String으로 반환한다. flask로 딕셔너리 형태로 자바스크립트에 넘겨준다.
 
 
 # In[ ]:
