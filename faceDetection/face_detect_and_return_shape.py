@@ -18,21 +18,6 @@ class DetectShape:
         #랜드마크 포인트 리스트
         self.landmark_list = []
 
-    '''
-    camera 영상을 보여주는 함수
-    '''
-    def showVideoRGB(self):
-        cap=cv2.VideoCapture(0)
-        print("width:%d, height: %d" %(cap.get(3), cap.get(4)))
-
-        while(True):
-            ret, frame=cap.read()
-            cv2.imshow('frame_color', frame)  # 컬러 화면 출력
-            if cv2.waitKey(1) == ord('q'):
-                break
-        cap.release()
-        cv.destroyAllWindows()
-
     '''랜드마크 포인트를 찾는 함수'''
     def find_landmark_point(self):
 
@@ -56,8 +41,6 @@ class DetectShape:
 
         # 인식된 얼굴 개수 출력
         print("Number of faces detected: {}".format(len(dets)))
-
-
 
         # 이제부터 인식된 얼굴 개수만큼 반복하여 얼굴 윤곽을 표시할 것이다.
         for k, d in enumerate(dets):
