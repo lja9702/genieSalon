@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 
 <title>헤어스타일 추천</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="css/bootstrap.css">
 
@@ -25,12 +25,14 @@
 
 #full{
  
- width:100%;
- height:100%;
+ width:98vw;
+ height:96vh;
 background-color: rgba( 255, 255, 255, 0.6 );
  padding:1vw;
  text-align:center;
  vertical-align: middle;
+ border-radius: 20px;
+ 
 }
 
 
@@ -51,12 +53,20 @@ background-color: rgba( 255, 255, 255, 0.6 );
 #right{
 
  text-align:center;
- text-align:middle;
  width:90%;
  height:100%;
  border:solid 2px red;
  margin-left:1vw;
 }
+
+.layer {
+		    position: absolute;
+		    text-align: center;
+		    width: 100vw;
+		    height: 100vh;
+		    padding:1vw;
+		    background-image : url('./img/bgimg.jpg');
+		}
 
 </style> 
 
@@ -66,8 +76,8 @@ background-color: rgba( 255, 255, 255, 0.6 );
 
 <body>
 
-
-<div id="full" style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden;">
+<div class="layer">
+<div id="full" style="white-space:nowrap;overflow-x:auto;overflow-y:hidden;">
 
 <table style="border:solid 2px green;width:100%;height:50%;">
 
@@ -94,7 +104,7 @@ background-color: rgba( 255, 255, 255, 0.6 );
  
 
   <table style="width:100%; height:10%;">
-  <tr><td style="background-color:yellow; width:40% "></td><td style="background-color:blue;"></td></tr>
+  <tr><td style="background-color:#FAEB78; width:40% "></td><td style="background-color:#AADBFF;"></td></tr>
   
   </table>
 
@@ -164,14 +174,15 @@ background-color: rgba( 255, 255, 255, 0.6 );
 </table>
 
 
-<div style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden; width:100%; height:10vh;">
+<div style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden; width:100%; height:13vh;">
 </div>
-<div style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden; width:100%; height:10vh;">
+<div style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden; width:100%; height:13vh;;">
 </div>
 
  
 
 </div> <!-- full -->
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script> 

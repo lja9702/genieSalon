@@ -1,33 +1,30 @@
 <!DOCTYPE html>
 <html>
  <head>
-   <title>KT맵 JavaScript API v3 Example: Map Simple</title>
+
    <meta charset="utf-8" />
-   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1">
    <style type="text/css">
-     html { height: 100% }
-     body { height: 100%; margin: 0; padding: 0 }
+     
      #full{
- 		position:fixed;
- 		top:2vh;
- 		left:2vw;
- 		width:80vw;
- 		height:80vh;
- 		background-color:white;
- 		padding:1vw;
+ 		width:98vw;
+ 		height:96vh;
+		background-color: rgba( 255, 255, 255, 0.6 );
+		padding:1vw;
  		text-align:center;
  		vertical-align: middle;
+ 		border-radius: 20px;
 		}
 		
-	#title{
 	
-			position: absolute;
+	.layer {
+		    position: absolute;
 		    text-align: center;
-		    height: 10%;
-		    top: 0;
-		    left: 0;
-		    font-size: 50px;
-	}
+		    width: 100vw;
+		    height: 100vh;
+		    padding:1vw;
+		    background-image : url('./img/bgimg.jpg');
+		}
 		
      #map_div { width: 100%; height: 100%;  }
      #info_div { width: 100%; height: 100%; border:solid 2px red;}
@@ -55,14 +52,9 @@
  </head>
  <body>
  
- 	
+ 	<div class="layer">
  	<table id="full">
- 	<tr>
- 	<td>
- 	<div id="title">지니살롱</div>
- 	</td>
  	
- 	</tr>
  	
  	
  	<tr>
@@ -85,7 +77,7 @@
    </td>
    </tr>
    </table>
-   
+   </div>
   
  </body>
 </html>
