@@ -7,22 +7,27 @@
 <meta charset="UTF-8">
 
 <title>헤어스타일 추천</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="css/bootstrap.css">
 
 <link rel="stylesheet" href="chart.css">
 <link rel="stylesheet" href="https://cdn.rawgit.com/theus/chart.css/v1.0.0/dist/chart.css">
 
 <style type="text/css">
 
+@FONT-FACE{
+			font-family: 'BMJUA_ttf';
+			src:url("./font/BMJUA_ttf.ttf");
+		}
 
- 
+
 
 #full{
- position:fixed;
- top:2vh;
- left:2vw;
- width:80vw;
- height:80vh;
- background-color:white;
+ 
+ width:100%;
+ height:100%;
+background-color: rgba( 255, 255, 255, 0.6 );
  padding:1vw;
  text-align:center;
  vertical-align: middle;
@@ -64,7 +69,7 @@
 
 <div id="full" style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden;">
 
-<table style="border:solid 2px green;width:100%;height:65%;">
+<table style="border:solid 2px green;width:100%;height:50%;">
 
  
 
@@ -84,23 +89,23 @@
  <td>
 
   <div id="right" >
+  
+  <div style="height:40px;"></div>
+ 
 
-  <div class="charts">
-  <div class="charts__chart chart--p100 chart--blue">
-    <div class="charts__chart chart--p40  chart--yellow">
-      
-      </div>
-  </div><!-- /.charts__chart -->
-  </div>
-
-  <br>
-  <br>
-
-  <button style="width:100%;height:5vh;" onclick="location='findSalon.html'">미용실예약</button>
+  <table style="width:100%; height:10%;">
+  <tr><td style="background-color:yellow; width:40% "></td><td style="background-color:blue;"></td></tr>
+  
+  </table>
 
   <br>
   <br>
-  <button style="width:100%;height:5vh;" onclick="location='main.html'">뒤로가기</button>
+
+  <button style="width:50%;height:5vh;" class = "btn btn-danger" onclick="location='findSalon.html'">미용실예약</button>
+
+  <br>
+  <br>
+  <button style="width:50%;height:5vh;" class = "btn btn-danger" onclick="location='main.html'">뒤로가기</button>
 
 
 
@@ -125,7 +130,7 @@
 <tr>
 
  
-<td style="width:40vw;">
+<td style="width:55vw;">
 
  
 
@@ -161,12 +166,16 @@
 
 <div style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden; width:100%; height:10vh;">
 </div>
+<div style="border:solid 2px navy;white-space:nowrap;overflow-x:auto;overflow-y:hidden; width:100%; height:10vh;">
+</div>
 
  
 
 </div> <!-- full -->
 
- 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script> 
+
 </body>
 
  
