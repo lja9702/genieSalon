@@ -1,12 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>GENIE SALON</title>
+	<meta charset="UTF-8">
+	<title>GENIE SALON</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/bootstrap.css">
+<style type="text/css">
+        .layer {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            font-size: 50px;
+        }
+        .layer .content {
+            display: inline-block;
+            vertical-align: middle
+        }
+        .layer .blank {
+            display: inline-block;
+            width: 0;
+            height: 100%;
+            vertical-align: middle
+        }
+    </style>
+
 </head>
+
 <body>
-<h1> 지니살롱에 오신 걸 환영합니다 </h1>
-<button onclick="location='camera.html'">헤어스타일 추천</button>
-<button onclick="location='findSalon.html'">미용실 찾기</button>
+
+	<div class="layer">
+		<span class = "content">지니살롱 </span>
+		<br>
+		<span class="blank"></span>
+		<button type = "button" class = "btn btn-danger" onclick="location='camera.html'">헤어스타일 추천</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type = "button" class = "btn btn-danger" onclick="location='findSalon.html'">미용실 찾기</button>
+	</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>  
 </body>
+
 </html>
