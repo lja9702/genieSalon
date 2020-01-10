@@ -23,13 +23,13 @@
 		}
 		.layer .content {
 		    display: inline-block;
-		    vertical-align: middle
+		    vertical-align: middle;
 		}
 		.layer .blank {
 		    display: inline-block;
 		    width: 0;
 		    height: 100%;
-		    vertical-align: middle
+		    vertical-align: middle;
 		}
 	
 	span {font-family:BMJUA_ttf;}
@@ -37,6 +37,17 @@
 		background-image : url('./img/bgimg.jpg');
 		background-repeat : no-repeat;  /* 반복 안함 */
 		background-size: cover;
+	}
+	
+	#background_logo {
+		 background-color: rgba( 255, 255, 255, 0.6 );;
+		 display: inline-block;
+		 vertical-align: middle; 
+		 padding-top:15px;
+		 padding-bottom:5px;
+		border-radius: 80px;
+
+		 
 	}
 	</style>
 
@@ -46,18 +57,27 @@
 
 	<div class="layer">
 
-		<span class = "content">지니살롱 </span>
+		
+	 <div id="background_logo">
 
 		<span class = "content">
-			<img src = "./img/genieLogo.png" width="20%" height="20%">
+		
+			<img src = "./img/genieLogo.png" width="20%" height="20%" >
 			<br>지니살롱 <br>
 			<button type = "button" class = "btn btn-danger" onclick="location='camera.html'">헤어스타일 추천</button>
 			&nbsp;
 			<button type = "button" class = "btn btn-danger" onclick="location='findSalon.html'">미용실 찾기</button>
 		</span>
 
+		
+		</div>
+		
 		<span class="blank"></span>
-	</div>
+		
+		</div>
+		
+		
+	
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
