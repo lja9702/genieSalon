@@ -34,6 +34,10 @@ def camera_page():
 	# return the rendered template
 	return render_template("camera.html")
 
+@app.route("/camToRecommed")
+def camtorecommed_page():
+	return render_template("camToRecommed.html")
+	
 count = 0
 def check_count():
 	global count
@@ -99,7 +103,7 @@ def generate(face_detect_func):
 				print("redirect recommendation.html")
 				# release the video stream pointer
 				vs.stop()
-				#TODO: camToRecommed.html로 이동하게 하기
+				camtorecommed_page()
 
 			if outputFrame is None:
 				continue
