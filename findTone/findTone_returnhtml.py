@@ -21,12 +21,12 @@ class DetectTone:
         # 입력 얼굴사진 지정하기
         self.image_file = "test1.jpg"
 
-        
+
         self.yourtone=[]
         #plt.imshow(img)
         #plt.show()
         #self.parsehaircolor()
-        self.send_tone_to_html()
+        #self.send_tone_to_html()
 
 
     def findFacetone(self,r,g,b):
@@ -34,7 +34,7 @@ class DetectTone:
             r=int(r)
             g=int(g)
             b=int(b)
-        
+
         if r-g>=((g-b)*2.5):
             #print("cool")
             return "cool"
@@ -48,7 +48,7 @@ class DetectTone:
         # 출력 파일 이름
         output_file = re.sub(r'\.jpg|jpeg|PNG$', '-output.jpg', self.image_file)
         # 캐스케이드 파일의 경로 지정하기
-        cascade_file = "haarcascade_frontalface.xml"
+        cascade_file = "haarcascade_frontalface_alt.xml"
         # 이미지 읽어 들이기
         image = cv2.imread(self.image_file)
         # 그레이스케일로 변환하기
@@ -79,7 +79,7 @@ class DetectTone:
             print("no face or more face")
         #plt.imshow(img_clone)
         #plt.show()
-    
+
         # 사진의 RGB 평균값 구하기
         Red = []
         Green = []
@@ -108,14 +108,14 @@ class DetectTone:
         #비교 Y2552550 R25500 하여 거리기반으로 가까운 곳을 구한다
         #Y가 많으면 웜톤 R이많으면 쿨톤
         #여러사진을 비교한 결과 RGB에서 RG 평균값의 차이와 GB 평균값의 차이를 구해서 RG평균값 >= GB평균값*2.5이면 쿨톤이다
-        
+
         if R_avg-G_avg>=((G_avg-B_avg)*2.5):
             #print("쿨톤")
             self.yourtone.append("쿨톤")
         else:
             #print("웜톤")
             self.yourtone.append("웜톤")
-        
+
 
         #print(yourtone)
         #plt.imshow(img)
@@ -123,7 +123,7 @@ class DetectTone:
 
         reco_haircolor=self.parsehaircolor();
         return reco_haircolor,self.yourtone[0]
-    
+
     #추천 머리색 추천
 
     def parsehaircolor(self):#머리색 xml파싱
@@ -172,10 +172,10 @@ class DetectTone:
         for tone in warmtone:
             tone[1:4]=["#"+str(hex(int(tone[1])))[2:]+str(hex(int(tone[2])))[2:]+str(hex(int(tone[3])))[2:]]
             del tone[2]
-    
+
         #print(cooltone)
         #print(warmtone)
-        
+
         if self.yourtone[0]=='쿨톤':
             reco_tone=random.sample(cooltone,5)
         else:
@@ -183,11 +183,11 @@ class DetectTone:
 
         #print(reco_tone)
         return reco_tone
-    
-    
+
+
     #@app.route("/", methods=['GET'])
     def send_tone_to_html(self):
-        
+
         color,tone=self.detectowntone()
         print(color)
         print(tone)
@@ -197,11 +197,11 @@ class DetectTone:
 
 
 
-DetectTone()
+tmp = DetectTone()
+tmp.send_tone_to_html()
 
 
 # In[267]:
 
 
 #결과는 String으로 반환한다. flask로 딕셔너리 형태로 자바스크립트에 넘겨준다.
-
