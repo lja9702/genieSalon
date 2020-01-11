@@ -7,7 +7,7 @@ class DetectGender():
 
     def __init__(self):
 
-        self.gender_list = ['male', 'female']
+        self.gender_list = ['Male', 'Female']
 
         self.detector = dlib.get_frontal_face_detector()
 
