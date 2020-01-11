@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>예약하기</title>
+
+
+<meta name="viewport"
+	content="height=device-height, width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/bootstrap.css">
+<style>
+body {
+	background-image: url('./img/bgimg.jpg');
+	background-repeat: no-repeat; /* 반복 안함 */
+	background-size: cover;
+	font-family: 'BMJUA_ttf';
+}
+
+@FONT-FACE {
+	font-family: 'BMJUA_ttf';
+	src: url("./font/BMJUA_ttf.ttf");
+}
+
+#full {
+	width: 98vw;
+	height: 96vh;
+	background-color: rgba(255, 255, 255, 0.6);
+	margin: 1vw;
+	padding: 2vw;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 20px;
+
+}
+
+#full span {
+	font-size: 40px;
+}
+
+#full div {
+	margin: 2vw;
+	font-size: 32px;
+}
+
+#button{
+
+	font-size:50px;
+}
+
+
+
+</style>
+
+<script>
+	function inputPhoneNumber(obj) {
+
+		var number = obj.value.replace(/[^0-9]/g, "");
+		var phone = "";
+
+		if (number.length < 4) {
+			return number;
+		} else if (number.length < 7) {
+			phone += number.substr(0, 3);
+			phone += "-";
+			phone += number.substr(3);
+		} else if (number.length < 11) {
+			phone += number.substr(0, 3);
+			phone += "-";
+			phone += number.substr(3, 3);
+			phone += "-";
+			phone += number.substr(6);
+		} else {
+			phone += number.substr(0, 3);
+			phone += "-";
+			phone += number.substr(3, 4);
+			phone += "-";
+			phone += number.substr(7);
+		}
+		obj.value = phone;
+	}
+</script>
+</head>
+<body>
+	<div id="full">
+
+		<span>예약창</span>
+		<table style="width: 90vw; height: 60vh; vertical-align: top;">
+			<tr>
+			<td style="width:30%;"></td>
+				<td style="text-align: left;width: 20%;">
+
+					<div id="salon">미용실 :</div>
+					<div>이름 :</div>
+					<div>날짜 :</div>
+					<div>시간 :</div>
+					<div>휴대폰번호 :</div>
+				</td>
+				<td style="text-align: left;">
+					<div id="salon">
+						<input type="text" value="지니살롱" disabled>
+					</div>
+					<div>
+						<input type="text">
+					</div>
+					<div>
+						<input type="date">
+					</div>
+					<div>
+						<input type="time">
+					</div>
+					<div>
+						<input type="text" onKeyup="inputPhoneNumber(this);"
+							maxlength="13">
+					</div>
+				</td>
+			</tr>
+		</table>
+		<div id="button">
+
+			<button type="button" class="btn btn-danger"
+				onclick="location='findSalon.html'">취소</button>
+
+				&nbsp;&nbsp;&nbsp;&nbsp;
+
+			<button type="submit" class="btn btn-danger">완료</button>
+
+
+		</div>
+
+	</div>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+
+
+</body>
+</html>
