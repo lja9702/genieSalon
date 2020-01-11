@@ -48,26 +48,30 @@ class DetectTone:
         cascade = cv2.CascadeClassifier(cascade_file)
         # 얼굴 인식 실행하기
         # detectMultiScale - 얼굴 인식. minSize 이하의 크기는 무시. 너무 작게 지정하면 배경 등을 얼굴로 잘못 인식하게 된다.
+        count = 0
         face_list = cascade.detectMultiScale(image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(150, 150))
-        if len(face_list) == 1:
-            # 인식한 부분 표시하기
-            #print(face_list)
-            color = (0, 0, 255)
-            for face in face_list:
-                x, y, w, h = face
-                cv2.rectangle(image, (x, y), (x+w, y+h), color, thickness=1)
-                #사각형 부분 자르기 아래의 출력 추가외는 관계없다
-                #img_clone=img[y:y+h,x:x+w]
-                y1=int(y+h*(1/2))
-                x1=int(x+h*(1/2))
-                h1=int(h*1/4)
-                img_clone=img[y1-h1:y1+h1,x1-h1:x1+h1]
-                #원래 파일에 사각형 출력 추가
-                cv2.rectangle(img, (x, y), (x+w, y+h), color, thickness=1)
-            # 파일로 출력하기
-            #cv2.imwrite(output_file, image)
-        else:
-            print("no face or more face")
+        while(count < 10):
+            if len(face_list) == 1:
+                break
+            face_list = cascade.detectMultiScale(image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(150, 150))
+            count += 1
+
+        if(count == 10):
+            print("no or more face detect")
+            return
+
+        # 인식한 부분 표시하기
+        #print(face_list)
+        color = (0, 0, 255)
+        for face in face_list:
+            x, y, w, h = face
+            cv2.rectangle(image, (x, y), (x+w, y+h), color, thickness=1)
+            #사각형 부분 자르기 아래의 출력 추가외는 관계없다
+            #img_clone=img[y:y+h,x:x+w]
+            y1=int(y+h*(1/2))
+            x1=int(x+h*(1/2))
+            h1=int(h*1/4)
+            img_clone=img[y1-h1:y1+h1,x1-h1:x1+h1]
         #plt.imshow(img_clone)
         #plt.show()
 

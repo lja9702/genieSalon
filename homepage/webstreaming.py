@@ -30,6 +30,9 @@ detect_shape = DetectShape()
 detect_gender = DetectGender()
 
 stop_record = False	#동영상 출력 종료 여부 변수
+@app.route("/findSalon")
+def findsalon_page():
+	return render_template("findSalon.html")
 
 @app.route("/main")
 def main_page():
