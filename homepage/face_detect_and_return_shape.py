@@ -14,9 +14,10 @@ class DetectShape:
         # 랜드마크 파일 경로
         self.predictor_path = "static/model/shape_predictor_68_face_landmarks.dat"
         # 이미지 경로
-        self.img_path = "static/img/ang_test2.jpg"
+        self.img_path = "static/img/capture.jpg"
         #랜드마크 포인트 리스트
         self.landmark_list = []
+        self.shape = ""
 
     '''랜드마크 포인트를 찾는 함수'''
     def find_landmark_point(self):
@@ -84,6 +85,8 @@ class DetectShape:
     '''
     def measure_face_shape(self):
 
+        self.find_landmark_point()
+
         upper_width = math.sqrt(pow(self.landmark_list[2][0] - self.landmark_list[14][0], 2) \
         + pow(self.landmark_list[2][1] - self.landmark_list[14][1], 2))
 
@@ -100,26 +103,16 @@ class DetectShape:
         #각진 얼굴
         print("upper_width / lower_width: %lf" %(upper_width / lower_width))
         if upper_width / lower_width < 1.4:
-            return {"shape": "ang"}
+            self.shape = "ang"
         #게란형 얼굴
         elif (rate > 1.11 and rate < 1.5):
-            return {"shape": "egg"}
+            self.shape = "egg"
         #둥근형 얼굴
         elif rate <= 1.11:
-            return {"shape": "round"}
+            self.shape = "round"
         #긴 얼굴
         elif rate >= 1.5:
-            return {"shape": "long"}
+            self.shape = "long"
         #역삼각형 얼굴
-
-    #@main.route('/main', methods=['GET'])
-    def send_shape_to_html(self):
-        landmark_list = find_landmark_point()
-        shape = measure_face_shape(landmark_list)
-        print(shape)
-
-        return render_template('/recommend.html', faceShapeHtml=shape)
-
-detect = DetectShape()
-print(detect.find_landmark_point())
-print(detect.measure_face_shape())
+        else:
+            self.shape = "tri"

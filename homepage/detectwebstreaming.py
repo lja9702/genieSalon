@@ -4,10 +4,11 @@ from flask import Flask
 from flask import render_template
 import threading
 import argparse
-import datetime
 import imutils
-import time
 import cv2
+import random, glob, os
+from face_detect_and_return_shape import DetectShape
+from detect_gender import DetectGender
 
 # initialize the output frame and a lock used to ensure thread-safe
 # exchanges of the output frames (useful when multiple browsers/tabs
@@ -18,25 +19,24 @@ lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
 
-# initialize the video stream and allow the camera sensor to
-# warmup
-#vs = VideoStream(usePiCamera=1).start()
 vs = VideoStream(src=0).start()
-time.sleep(2.0)
-
-stop_record = False
+#time.sleep(2.0)
 
 #얼굴 인식 캐스케이드 파일 읽는다
 face_cascade = cv2.CascadeClassifier('static/xml/haarcascade_frontface.xml')
+detect_shape = DetectShape()
+detect_gender = DetectGender()
+stop_record = False	#동영상 출력 종료 여부 변수
 
 @app.route("/camera")
 def camera_page():
-	# return the rendered template
 	return render_template("camera.html")
 
 @app.route("/recommendation")
 def camtorecommed_page():
-	return render_template("recommendation.html")
+	celeb_src , celeb_name = find_celeb()
+
+	return render_template("recommendation.html", celebSrc = celeb_src, celebName = celeb_name)
 
 @app.route("/camera/isFinished")
 def is_finished():
@@ -45,21 +45,36 @@ def is_finished():
 count = 0
 def check_count():
 	global count
-	if(count == 70):
+	if(count == 60):
 		return
 	count += 1
 	print("count: %d" %count)
 
+def find_celeb():
+	global detect_shape, detect_gender
+	shape = detect_shape.shape
+	gender = detect_gender= detect_gender.gender
+
+	print("shape: %s gender: %s" %(shape, gender))
+
+	img_path = "static/img/celeb/" + gender + "/" + shape
+	print("img_path: %s" %img_path)
+	#특정 얼굴형 젠더에서 랜덤으로 사진 가져오기
+	file = random.choice([
+    x for x in os.listdir(img_path)
+    if os.path.isfile(os.path.join(img_path, x)) and
+    x.endswith('.jpg')])
+
+	celeb_src = img_path + file
+
+	return [celeb_src, file[:-4]]
+
 def detect_face():
 	# grab global references to the video stream, output frame, and
 	# lock variables
-	global vs, outputFrame, lock, stop_record, count
+	global vs, outputFrame, lock, stop_record, count, detect_shape
 
-	total = 0
-	# loop over frames from the video stream
 	while True:
-		# read the next frame from the video stream, resize it,
-		# convert the frame to grayscale, and blur it
 		frame = vs.read()
 		frame = imutils.resize(frame, width=400)
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -73,10 +88,14 @@ def detect_face():
 			timer = threading.Timer(1, check_count)
 			timer.start()
 			#5초뒤 timer를 종료하고 다른 웹으로 넘어가게한다.
-			if count == 70:
+			if count == 60:
 				print('stop')
 				timer.cancel()
 				cv2.imwrite("static/img/capture.jpg",frame) #save image
+				#얼굴형 판정, 성별 판정
+				detect_shape.measure_face_shape()
+				detect_gender.detectowngender()
+
 				stop_record = True
 				break
 
