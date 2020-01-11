@@ -24,18 +24,28 @@ app = Flask(__name__)
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
+stop_record = False
+
 #얼굴 인식 캐스케이드 파일 읽는다
 face_cascade = cv2.CascadeClassifier('static/xml/haarcascade_frontface.xml')
 
 @app.route("/camera")
-def index():
+def camera_page():
 	# return the rendered template
 	return render_template("camera.html")
+
+count = 0
+def check_count():
+	global count
+	if(count == 70):
+		return
+	count += 1
+	print("count: %d" %count)
 
 def detect_face():
 	# grab global references to the video stream, output frame, and
 	# lock variables
-	global vs, outputFrame, lock
+	global vs, outputFrame, lock, stop_record, count
 
 	total = 0
 	# loop over frames from the video stream
@@ -51,20 +61,33 @@ def detect_face():
 		print(len(faces))
 		#얼굴이 1개 인식되면
 		if(len(faces) == 1):
-			# 인식된 얼굴에 사각형을 출력한다
-			cv2.imwrite("capture.jpg",frame) #save image
+			#얼굴이 인식되면 타이머를 통하여 5초 후 사진이 찍히도록 thread를 시작한다
+			timer = threading.Timer(1, check_count)
+			timer.start()
+			#5초뒤 timer를 종료하고 다른 웹으로 넘어가게한다.
+			if count == 70:
+				print('stop')
+				timer.cancel()
+				cv2.imwrite("capture.jpg",frame) #save image
+				stop_record = True
+				break
+
 			for (x,y,w,h) in faces:
 				cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
-
 
 		# acquire the lock, set the output frame, and release the
 		# lock
 		with lock:
 			outputFrame = frame.copy()
 
-def generate():
+def generate(face_detect_func):
 	# grab global references to the output frame and lock variables
-	global outputFrame, lock
+	global outputFrame, lock, stop_record
+
+	# start a thread that will perform motion detection
+	t = threading.Thread(target=face_detect_func)
+	t.daemon = True
+	t.start()
 
 	# loop over frames from the output stream
 	while True:
@@ -72,6 +95,12 @@ def generate():
 		with lock:
 			# check if the output frame is available, otherwise skip
 			# the iteration of the loop
+			if stop_record is True:
+				print("redirect recommendation.html")
+				# release the video stream pointer
+				vs.stop()
+				#TODO: camToRecommed.html로 이동하게 하기
+
 			if outputFrame is None:
 				continue
 
@@ -90,7 +119,7 @@ def generate():
 def video_feed():
 	# return the response generated along with the specific media
 	# type (mime type)
-	return Response(generate(),
+	return Response(generate(detect_face),
 		mimetype = "multipart/x-mixed-replace; boundary=frame")
 
 # check to see if this is the main thread of execution
@@ -105,17 +134,9 @@ if __name__ == '__main__':
 		help="# of frames used to construct the background model")
 	args = vars(ap.parse_args())
 
-	# start a thread that will perform motion detection
-	t = threading.Thread(target=detect_face)
-	t.daemon = True
-	t.start()
-
 	# start the flask app
 	app.run(host=args["ip"], port=args["port"], debug=True,
 		threaded=True, use_reloader=False)
-
-# release the video stream pointer
-vs.stop()
 
 '''
 https://www.pyimagesearch.com/2019/09/02/opencv-stream-video-to-web-browser-html-page/
