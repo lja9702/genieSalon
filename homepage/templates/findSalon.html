@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <title>KT맵 JavaScript API v3 Example: Map Simple</title>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+   <style type="text/css">
+     html { height: 100% }
+     body { height: 100%; margin: 0; padding: 0 }
+     #full{
+ 		position:fixed;
+ 		top:2vh;
+ 		left:2vw;
+ 		width:80vw;
+ 		height:80vh;
+ 		background-color:white;
+ 		padding:1vw;
+ 		text-align:center;
+ 		vertical-align: middle;
+		}
+		
+	#title{
+	
+			position: absolute;
+		    text-align: center;
+		    height: 10%;
+		    top: 0;
+		    left: 0;
+		    font-size: 50px;
+	}
+		
+     #map_div { width: 100%; height: 100%;  }
+     #info_div { width: 100%; height: 100%; border:solid 2px red;}
+   </style>
+   <script type="text/javascript"
+     src="https://gis.kt.com/maps/v3.0/sdk.js?key=642dd03a4712cef8bb36de4d06f8dd86565a738470cb4c697fa6cbcff6f8c65c6a66b0c4">
+   </script>
+   <script type="text/javascript">
+     function initialize() {
+       var mapOpts = {
+         center: new olleh.maps.UTMK(958386.063532902, 1941447.5761742294),
+         zoom: 9,
+         mapTypeId: 'ROADMAP'
+       };
+       //var map = new olleh.maps.Map(document.getElementsByClassName('map_div')[0], mapOpts);
+       var map = new olleh.maps.Map(document.getElementById('map_div'), mapOpts);
+     }
+     window.onload = initialize;
+     
+     
+    
+   
+     
+   </script>
+ </head>
+ <body>
+ 
+ 	
+ 	<table id="full">
+ 	<tr>
+ 	<td>
+ 	<div id="title">지니살롱</div>
+ 	</td>
+ 	
+ 	</tr>
+ 	
+ 	
+ 	<tr>
+ 	<td style="width:50%;">
+   <div id="map_div">
+ 
+   </div>
+   </td>
+   <td>
+   
+   <div id="info_div">
+   
+   
+   <label id="result"></label>
+   
+   
+   
+   </div>
+   
+   </td>
+   </tr>
+   </table>
+   
+  
+ </body>
+</html>

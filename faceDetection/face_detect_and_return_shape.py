@@ -118,7 +118,7 @@ class DetectShape:
         shape = measure_face_shape(landmark_list)
         print(shape)
 
-        return render_template('/index.html', faceShapeHtml=shape)
+        return render_template('/recommend.html', faceShapeHtml=shape)
 
 detect = DetectShape()
 print(detect.find_landmark_point())
