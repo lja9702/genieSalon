@@ -2,7 +2,8 @@
 <html>
 <head>
 
-<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <meta name="viewport"
 	content="height=device-height, width=device-width, initial-scale=1">
 
@@ -65,17 +66,20 @@ body {
 		var map = new olleh.maps.Map(document.getElementById('map_div'),
 				mapOpts);
 		
-		add_salon();
-		add_salon();
+		add_salon("기가살롱","서울특별시","2점"); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
 	}
 	window.onload = initialize;
 
 </script>
 
 <script>
-	function add_salon() {
+	function add_salon(str_name,str_address,str_grade) {
 		var div = document.createElement('div');
-		document.getElementById('name').innerHTML = "기가살롱";
+		var btn = document.getElementById('btn');
+		document.getElementById('name').innerHTML = str_name;
+		btn.id = str_name;
+		document.getElementById('address').innerHTML = str_address;
+		document.getElementById('grade').innerHTML = str_grade;
 		div.innerHTML = document.getElementById('form').innerHTML;
 		document.getElementById('info_div').appendChild(div);
 	}
@@ -102,8 +106,8 @@ body {
 
 				<td id="address"style="width: 70%">경기도 성남시</td>
 				<td>
-					<button type="button" class="btn btn-danger"
-						onclick='location="reservation.html"'>예약하기</button>
+					<button type="button" id="btn" class="btn btn-danger"
+						onclick='location="reservation.html?"+encodeURIComponent(id)'>예약하기</button>
 
 				</td>
 			</tr>
