@@ -31,6 +31,10 @@ detect_gender = DetectGender()
 
 stop_record = False	#동영상 출력 종료 여부 변수
 
+@app.route("/main")
+def main_page():
+	return render_template("main.html")
+
 @app.route("/camera")
 def camera_page():
 	return render_template("camera.html")
@@ -161,6 +165,7 @@ def video_feed():
 	# type (mime type)
 	return Response(generate(detect_face),
 		mimetype = "multipart/x-mixed-replace; boundary=frame")
+
 
 # check to see if this is the main thread of execution
 if __name__ == '__main__':
