@@ -19,7 +19,7 @@ class DetectTone:
 
     def __init__(self):
         # 입력 얼굴사진 지정하기
-        self.image_file = "/static/img/test1.jpg"
+        self.image_file = "static/img/test1.jpg"
 
 
         self.yourtone=[]
@@ -48,7 +48,7 @@ class DetectTone:
         # 출력 파일 이름
         output_file = re.sub(r'\.jpg|jpeg|PNG$', '-output.jpg', self.image_file)
         # 캐스케이드 파일의 경로 지정하기
-        cascade_file = "static/xml/haarcascade_frontalface_alt.xml"
+        cascade_file = "static/haarcascade_frontalface_alt.xml"
         # 이미지 읽어 들이기
         image = cv2.imread(self.image_file)
         # 그레이스케일로 변환하기

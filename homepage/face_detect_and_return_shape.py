@@ -12,7 +12,7 @@ class DetectShape:
     #ESC_KEY = 27
     def __init__(self):
         # 랜드마크 파일 경로
-        self.predictor_path = "static/shape_predictor_68_face_landmarks.dat"
+        self.predictor_path = "static/model/shape_predictor_68_face_landmarks.dat"
         # 이미지 경로
         self.img_path = "static/img/ang_test2.jpg"
         #랜드마크 포인트 리스트

@@ -13,7 +13,7 @@ from PIL import Image
 
 
 # 입력 얼굴사진 지정하기
-image_file = "/static/img/test1.jpg"
+image_file = "static/img/test1.jpg"
 
 # 입력 얼굴사진을 적절하게 변환하기
 img = mpimg.imread(image_file)
@@ -202,10 +202,10 @@ from PIL import Image
 
 
 
-background = Image.open("/static/img/test1.jpg")
+background = Image.open("static/img/test1.jpg")
 
 
-foreground = Image.open("/static/img/hair.png")
+foreground = Image.open("static/img/hair.png")
 
 
 foreground_resize=foreground.resize((face_list[0][2],face_list[0][3]))
@@ -217,7 +217,7 @@ background.paste(foreground_resize, (face_list[0][0],face_list[0][1]))
 background.show()
 
 
-background.save('/static/img/hiarpaste_result.jpg')
+background.save('hiarpaste_result.jpg')
 
 
 # In[226]:
