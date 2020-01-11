@@ -80,7 +80,7 @@ body {
 
 				<td style="width: 65%;">
 					<img id="img_human" src="../static/img/capture.jpg" alt="사람" />
-					<img id="img_star" src="../static/img/star.PNG" alt="연예인" />
+					<img id="img_star" src={{celebSrc}} alt="연예인"/><br>{{celebName}}
 				</td>
 
 					<td>
@@ -93,9 +93,9 @@ body {
 							<table style="width: 100%; height: 10%;">
 								<tr>
 									<td id="warm_chart"
-										style="background-color: #FAEB78; width: 50%;">warm 50%</td>
+										style="background-color: #FAEB78; width: 50%;">warm {{warm}}</td>
 									<td id="warm_chart" style="background-color: #AADBFF;">cool
-										50%</td>
+										{{cool}}</td>
 								</tr>
 
 							</table>
@@ -144,7 +144,7 @@ body {
 						<div id="recommend"
 							style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%;">
 						</div>
-
+						{{colorList}}
 
 
 					</td>
@@ -164,7 +164,7 @@ body {
 			<div
 				style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 13vh;">
 			</div>
-
+			{{hairList}}
 
 
 		</div>
