@@ -34,10 +34,14 @@ def camera_page():
 	# return the rendered template
 	return render_template("camera.html")
 
-@app.route("/camToRecommed")
+@app.route("/recommendation")
 def camtorecommed_page():
-	return render_template("camToRecommed.html")
-	
+	return render_template("recommendation.html")
+
+@app.route("/camera/isFinished")
+def is_finished():
+	return str(stop_record)
+
 count = 0
 def check_count():
 	global count
@@ -72,7 +76,7 @@ def detect_face():
 			if count == 70:
 				print('stop')
 				timer.cancel()
-				cv2.imwrite("capture.jpg",frame) #save image
+				cv2.imwrite("static/img/capture.jpg",frame) #save image
 				stop_record = True
 				break
 
@@ -100,10 +104,10 @@ def generate(face_detect_func):
 			# check if the output frame is available, otherwise skip
 			# the iteration of the loop
 			if stop_record is True:
-				print("redirect recommendation.html")
+				print("redirect camtorecommed page")
 				# release the video stream pointer
 				vs.stop()
-				camtorecommed_page()
+				break
 
 			if outputFrame is None:
 				continue
