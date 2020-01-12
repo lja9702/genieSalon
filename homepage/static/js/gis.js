@@ -77,3 +77,32 @@ function infoWindowShow(marker){
     console.log(map);
     info.open(map)
 }
+
+
+/*
+	function initialize() {
+		var mapOpts = {
+			center : new olleh.maps.UTMK(958386.063532902, 1941447.5761742294),
+			zoom : 9,
+			mapTypeId : 'ROADMAP'
+		};
+		//var map = new olleh.maps.Map(document.getElementsByClassName('map_div')[0], mapOpts);
+		var map = new olleh.maps.Map(document.getElementById('map_div'),
+				mapOpts);
+
+		add_salon("기가살롱","서울특별시","2점"); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
+	}
+	window.onload = initialize;
+
+
+	function add_salon(str_name,str_address,str_grade) {
+		var div = document.createElement('div');
+		var btn = document.getElementById('btn');
+		document.getElementById('name').innerHTML = str_name;
+		btn.id = str_name;
+		document.getElementById('address').innerHTML = str_address;
+		document.getElementById('grade').innerHTML = str_grade;
+		div.innerHTML = document.getElementById('form').innerHTML;
+		document.getElementById('info_div').appendChild(div);
+	}
+	*/
