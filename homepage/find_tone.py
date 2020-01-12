@@ -1,4 +1,4 @@
-import cv2,re,sys
+import cv2,re,sys,dlib
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
@@ -13,6 +13,9 @@ class DetectTone:
     def __init__(self):
         # 입력 얼굴사진 지정하기
         self.image_file = "static/img/capture.jpg"
+        
+        self.detector = dlib.get_frontal_face_detector()
+
         self.yourtone = {}
         #plt.imshow(img)
         #plt.show()
@@ -34,44 +37,41 @@ class DetectTone:
             return "warm"
 
     def detectowntone(self):
-        # 입력 얼굴사진을 적절하게 변환하기
-        img = mpimg.imread(self.image_file)
-        # # 출력 파일 이름
-        # output_file = re.sub(r'\.jpg|jpeg|PNG$', '-output.jpg', self.image_file)
-        # 캐스케이드 파일의 경로 지정하기
-        cascade_file = "static/xml/haarcascade_frontalface_alt.xml"
-        # 이미지 읽어 들이기
-        image = cv2.imread(self.image_file)
-        # 그레이스케일로 변환하기
-        image_gs = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        # 얼굴 인식 전용 캐스케이드 파일 읽어 들이기
-        cascade = cv2.CascadeClassifier(cascade_file)
-        # 얼굴 인식 실행하기
-        # detectMultiScale - 얼굴 인식. minSize 이하의 크기는 무시. 너무 작게 지정하면 배경 등을 얼굴로 잘못 인식하게 된다.
-        count = 0
-        face_list = cascade.detectMultiScale(image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(150, 150))
-        while(count < 10):
-            if len(face_list) == 1:
-                break
-            face_list = cascade.detectMultiScale(image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(150, 150))
-            count += 1
+        
+        img = cv2.imread(self.image_file)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        #plt.imshow(img)
+        #plt.show()
 
-        if(count == 10):
-            print("no or more face detect")
-            return
+        faces = self.detector(img)
+        #print(faces)
 
         # 인식한 부분 표시하기
         #print(face_list)
-        color = (0, 0, 255)
-        for face in face_list:
-            x, y, w, h = face
-            cv2.rectangle(image, (x, y), (x+w, y+h), color, thickness=1)
-            #사각형 부분 자르기 아래의 출력 추가외는 관계없다
-            #img_clone=img[y:y+h,x:x+w]
-            y1=int(y+h*(1/2))
-            x1=int(x+h*(1/2))
-            h1=int(h*1/4)
-            img_clone=img[y1-h1:y1+h1,x1-h1:x1+h1]
+        
+        # 인식할 얼굴이 없음
+        if len(faces) == 0:
+            print("no face")
+            return 
+        
+        for face in faces:
+            
+            
+            x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
+            
+
+            img_clone = img[y1:y2, x1+int(1/4*(x2-x1)):x2-int(1/4*(x2-x1))].copy()
+#             plt.imshow(img_clone)
+#             plt.show()
+#             x, y, w, h = face
+#             cv2.rectangle(image, (x, y), (x+w, y+h), color, thickness=1)
+#             #사각형 부분 자르기 아래의 출력 추가외는 관계없다
+#             #img_clone=img[y:y+h,x:x+w]
+#             y1=int(y+h*(1/2))
+#             x1=int(x+h*(1/2))
+#             h1=int(h*1/4)
+#             img_clone=img[y1-h1:y1+h1,x1-h1:x1+h1]
         #plt.imshow(img_clone)
         #plt.show()
 
@@ -90,14 +90,14 @@ class DetectTone:
         R_avg = sum(Red) / len(Red)
         G_avg = sum(Green) / len(Green)
         B_avg = sum(Blue) / len(Blue)
-        #print("Max Value")
-        #print("R : ", R_max)
-        #print("G : ", G_max)
-        #print("B : ", B_max)
-        #print("Avg Value")
-        #print("R : ", R_avg)
-        #print("G : ", G_avg)
-        #print("B : ", B_avg)
+#         print("Max Value")
+#         print("R : ", R_max)
+#         print("G : ", G_max)
+#         print("B : ", B_max)
+#         print("Avg Value")
+#         print("R : ", R_avg)
+#         print("G : ", G_avg)
+#         print("B : ", B_avg)
 
 
         #비교 Y2552550 R25500 하여 거리기반으로 가까운 곳을 구한다
@@ -214,6 +214,6 @@ class DetectTone:
 #todo=DetectTone()
 #print(todo.detectowntone())
 # print(todo.send_tone_to_html())
-
+#todo.detectowntone()
 
 #결과는 String으로 반환한다. flask로 딕셔너리 형태로 자바스크립트에 넘겨준다.
