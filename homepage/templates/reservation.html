@@ -52,6 +52,14 @@ body {
 </style>
 
 <script>
+
+function initialize() {
+	var temp = location.href.split("?");
+	var s_name = decodeURIComponent(temp[1]);
+	document.getElementById("salon_name").value = s_name;
+}
+window.onload = initialize;
+
 	function inputPhoneNumber(obj) {
 
 		var number = obj.value.replace(/[^0-9]/g, "");
@@ -78,6 +86,37 @@ body {
 		}
 		obj.value = phone;
 	}
+
+function func_submit(){
+
+		var rq = getXMLHttpRequest();
+		rq.open("POST","http://211.254.215.243:18070/reservation",true);
+		var str = '{"salon":"'+document.info_form.elements[0].value+'","name":"'+document.info_form.elements[1].value+'","day":"'+document.info_form.elements[2].value +'","time":"'+document.info_form.elements[3].value+'","phone":"'+document.info_form.elements[4].value+'"}';
+		rq.send(str);
+
+		rq.onreadystatechange = callback;
+
+
+		var str = document.info_form.elements[1].value+ "고객님 " + document.info_form.elements[0].value +" " + document.info_form.elements[2].value + " " + document.info_form.elements[3].value + "으로 예약되셨습니다.";
+
+
+		
+	}
+
+	function callback(){
+
+		if(rq.readyState==4&&rq.status==200){
+
+			alert(rq.responseText);
+		}else{
+
+			alert("잠시 후에 다시 예약해주시기 바랍니다.");
+		}
+
+
+
+
+	}
 </script>
 </head>
 <body>
@@ -100,17 +139,17 @@ body {
 						<input type="text" value="지니살롱" disabled>
 					</div>
 					<div>
-						<input type="text">
+						<input type="text" required>
 					</div>
 					<div>
-						<input type="date">
+						<input type="date" required>
 					</div>
 					<div>
-						<input type="time">
+						<input type="time" required>
 					</div>
 					<div>
 						<input type="text" onKeyup="inputPhoneNumber(this);"
-							maxlength="13">
+							maxlength="13" required>
 					</div>
 				</td>
 			</tr>

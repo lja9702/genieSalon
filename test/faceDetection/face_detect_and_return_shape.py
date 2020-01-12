@@ -14,7 +14,7 @@ class DetectShape:
         # 랜드마크 파일 경로
         self.predictor_path = "shape_predictor_68_face_landmarks.dat"
         # 이미지 경로
-        self.img_path = "./capture.jpg"
+        self.img_path = "./ang_test1.jpg"
         #랜드마크 포인트 리스트
         self.landmark_list = []
 
