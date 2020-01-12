@@ -18,7 +18,7 @@ pixelOffset: new olleh.maps.Point(0, -40) //marker.getIcon().size.height
 });
 var markers = [];
 var me = new olleh.maps.UTMK(965991.8348, 1929032.7373);
-var salonRawData = [[37.358812, 127.119542, "건영미용실", 3, "경기도 성남시", "OO구 OO로"], [37.360405, 127.113182, "지수미용실", 5], 
+var salonRawData = [[37.358812, 127.119542, "건영미용실", 3, "경기도 성남시", "OO구 OO로"], [37.360405, 127.113182, "지수미용실", 5, "경기도 성남시", "OO구 OO로"], 
     [37.360934, 127.117158, "민조미용실", 5, "경기도 성남시", "OO구 OO로"], [37.355449, 127.112655, "진아미용실", 5, "경기도 성남시", "OO구 OO로"], 
     [37.350954, 127.110495, "조금먼미용실", 4, "경기도 성남시", "OO구 OO로"], [37.350355, 127.111371, "조금먼미용실2", 3, "경기도 성남시", "OO구 OO로"],
     [37.403994, 127.116062, "조금먼미용실3", 2, "경기도 성남시", "OO구 OO로"], [37.257466, 127.140421, "조금먼미용실4", 3, "경기도 성남시", "OO구 OO로"],
@@ -51,23 +51,26 @@ function getData(){
     });
     markers = []
     salonData = []
+	pastName = "btn"
     salonRawData.some((_element, _index, _array) => {
-    let tmp_pos = latlngToUtmk(_element[0], _element[1]);
-    salonData.push(tmp_pos);
-    dist = tmp_pos.distanceTo(me);
-    if (dist <= 1000) {
-        let marker = new olleh.maps.overlay.Marker({
-            position: tmp_pos,
-            map: map,
-            caption: _element[2]
-        });
-        marker['attribute'] = {"name":_element[2], "dist": parseInt(dist), "rate": _element[3], "address": _element[4], "addrDetail": _element[5]};
-        marker.onEvent('click', function(e) {
-            infoWindowShow(this);
-        });
-        markers.push(marker);
-		add_salon(_element[2], _element[4] + " " + _element[5], _element[3]); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
-    }
+		let tmp_pos = latlngToUtmk(_element[0], _element[1]);
+		salonData.push(tmp_pos);
+		dist = tmp_pos.distanceTo(me);
+		if (dist <= 1000) {
+			let marker = new olleh.maps.overlay.Marker({
+				position: tmp_pos,
+				map: map,
+				caption: _element[2]
+			});
+			marker['attribute'] = {"name":_element[2], "dist": parseInt(dist), "rate": _element[3], "address": _element[4], "addrDetail": _element[5]};
+			marker.onEvent('click', function(e) {
+				infoWindowShow(this);
+			});
+			markers.push(marker);
+			console.log(_element)
+			add_salon(_element[2], _element[4] + " " + _element[5], _element[3] + "점", parseInt(dist) + " m", pastName); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
+			pastName = _element[2]
+		}
     });
     me = new olleh.maps.UTMK(1151654.8847289516, 1686265.631509801);
 }
@@ -79,13 +82,16 @@ function infoWindowShow(marker){
     info.open(map)
 }
 
-function add_salon(str_name,str_address,str_grade) {
+function add_salon(str_name,str_address,str_grade, str_dist, pastName) {
+	console.log(pastName);
 	var div = document.createElement('div');
-	var btn = document.getElementById('btn');
 	document.getElementById('name').innerHTML = str_name;
-	btn.id = str_name;
 	document.getElementById('address').innerHTML = str_address;
-	document.getElementById('grade').style.width=str_grade*20+'%';
+	document.getElementById('grade').innerHTML = str_grade;
+	document.getElementById('dist').innerHTML = str_dist;
+	var btnid = document.getElementById(pastName);	
+	btnid.id = str_name;
+	//document.getElementById('btn').id = document.getElementById('name').innerHTML;
 	div.innerHTML = document.getElementById('form').innerHTML;
 	document.getElementById('info_div').appendChild(div);
 }
