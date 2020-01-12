@@ -11,7 +11,7 @@ from detect_shape import DetectShape
 from detect_gender import DetectGender
 from find_tone import DetectTone
 from recommend_hair import MatchHair
-
+from datetime import datetime
 # initialize the output frame and a lock used to ensure thread-safe
 # exchanges of the output frames (useful when multiple browsers/tabs
 # are viewing the stream)
@@ -55,7 +55,7 @@ def camtorecommed_page():
 	print("shape: %s gender: %s" %(detect_shape.shape, detect_gender.gender))
 	hair_list = match_hair.hairstyle_src_list(shape = detect_shape.shape, gender = detect_gender.gender)
 	return render_template("recommendation.html", celebSrc = celeb_src, celebName = celeb_name,
-	colorList = color_list, cool = cool, warm = warm, hairList = hair_list)
+	colorList = color_list, cool = cool, warm = warm, hairList = hair_list, time = datetime.now())
 
 '''camera에서 얼굴을 인식해서 recommendation.html로 redirect를 하기위해 값을 넘기는 함수'''
 @app.route("/camera/isFinished")

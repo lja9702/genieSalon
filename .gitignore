@@ -1,3 +1,4 @@
 .DS_Store
 /.metadata/
 homepage/__pycache__
+homepage/static/img/capture.jpg
