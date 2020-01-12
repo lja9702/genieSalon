@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<meta name="viewport"
+	content="height=device-height, width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="../static/css/bootstrap.css">
+
+
+<style type="text/css">
+@FONT-FACE {
+	font-family: 'BMJUA_ttf';
+	src: url("../static/font/BMJUA_ttf.ttf");
+}
+
+#full {
+	width: 98vw;
+	height: 96vh;
+	background-color: rgba(255, 255, 255, 0.6);
+	padding: 2vw;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 20px;
+}
+
+body {
+	font-family: 'BMJUA_ttf';
+	background-image: url('../static/img/bgimg.jpg');
+	background-repeat: no-repeat; /* 반복 안함 */
+	background-size: cover;
+}
+
+.layer {
+	text-align: center;
+	width: 100vw;
+	height: 100vh;
+	padding: 1vw;
+}
+
+#map_div {
+	width: 90%;
+	height: 90%;
+}
+
+#info_div {
+	width: 90%;
+	height: 90%;
+
+}
+</style>
+<script type="text/javascript"
+	src="https://gis.kt.com/maps/v3.0/sdk.js?key=642dd03a4712cef8bb36de4d06f8dd86565a738470cb4c697fa6cbcff6f8c65c6a66b0c4">
+
+</script>
+<script type="text/javascript">
+	function initialize() {
+		var mapOpts = {
+			center : new olleh.maps.UTMK(958386.063532902, 1941447.5761742294),
+			zoom : 9,
+			mapTypeId : 'ROADMAP'
+		};
+		//var map = new olleh.maps.Map(document.getElementsByClassName('map_div')[0], mapOpts);
+		var map = new olleh.maps.Map(document.getElementById('map_div'),
+				mapOpts);
+
+		add_salon("기가살롱","서울특별시","2점"); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
+	}
+	window.onload = initialize;
+
+</script>
+
+<script>
+	function add_salon(str_name,str_address,str_grade) {
+		var div = document.createElement('div');
+		var btn = document.getElementById('btn');
+		document.getElementById('name').innerHTML = str_name;
+		btn.id = str_name;
+		document.getElementById('address').innerHTML = str_address;
+		document.getElementById('grade').innerHTML = str_grade;
+		div.innerHTML = document.getElementById('form').innerHTML;
+		document.getElementById('info_div').appendChild(div);
+	}
+
+	</script>
+
+
+</head>
+<body>
+
+	<div id="form" style="display: none">
+
+		<table
+			style="margin:8px;padding: 2px; width: 100%; height: 100%; background-color: rgba(255, 204, 204, 0.8); border-radius: 20px;">
+			<tr>
+
+
+				<td id="name"style="padding: 2px; font-size: x-large">지니살롱</td>
+				<td id="grade">평점 5점</td>
+			</tr>
+
+			<tr style="height: 60px">
+
+
+				<td id="address"style="width: 70%">경기도 성남시</td>
+				<td>
+					<button type="button" id="btn" class="btn btn-danger"
+						onclick='location="reservation.html?"+encodeURIComponent(id)'>예약하기</button>
+
+				</td>
+			</tr>
+
+
+		</table>
+
+	</div>
+
+	<div class="layer">
+
+		<table id="full">
+
+
+
+			<tr>
+				<td style="width: 4.5%;"></td>
+				<td style="width: 50%;">
+					<div id="map_div"></div>
+				</td>
+				<td>
+
+					<div id="info_div" style="padding: 10px;"></div>
+
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+
+</body>
+</html>
