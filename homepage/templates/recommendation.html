@@ -69,8 +69,16 @@ function print(name){
 	document.getElementById("star_name").innerHTML=name;
 }
 
+function set_warm(num){
+	
+	document.getElementById("warm_chart").style.width=num+'%';
+	
+	
+}
+
 function init(){ //김태희 있는 곳에 이름 넣으면 그 이름으로 뜹니다
 	print({{celebName}});
+	set_warm({{warm}});
 }
 
 window.onload = init;
