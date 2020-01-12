@@ -51,7 +51,7 @@ body {
 	text-align: center;
 	width: 90%;
 	height: 100%;
-	border: solid 2px red;
+	border: 0.5px;
 	margin-left: 1vw;
 }
 
@@ -87,7 +87,7 @@ window.onload = init;
 		<div id="full"
 			style="white-space: nowrap; overflow-x: hidden; overflow-y: hidden;">
 
-			<table style="border: solid 2px green; width: 100%; height: 50%;">
+			<table style="border: 0.5px ; width: 100%; height: 50%;">
 
 				<tr>
 
@@ -95,18 +95,22 @@ window.onload = init;
 
 
 
-						<table style="border: solid 2px green; width: 100%; height: 100%;">
+						<table style="border: 0.5px ; width: 100%; height: 100%;">
+							<tr>
+								<td></td>
+								<td style="height: 5%;">당신과 닮은꼴 연예인 </td>
+							</tr>
 
 							<tr>
-								<td style="border: solid 2px green; width: 60%;"><img
+								<td style="border: 0.5px ; width: 60%;"><img
 									id="img_human" style="width: 100%; height: 100%;"
 									src="../static/img/capture.jpg?q={{time}}" alt="사람" /></td>
 								<td><img id="img_star" style="width: 100%; height: 500px;"
 									src={{celebSrc}} alt="연예인" /></td>
 							</tr>
 
-							<tr style="height: 10%; border: solid 2px green;">
-								<td></td>
+							<tr style="height: 10%; border: 0.5px ;">
+								<td ></td>
 								<td id="star_name" style="text-aling: center;">{{celebName}}</td>
 							</tr>
 
@@ -161,19 +165,19 @@ window.onload = init;
 
 
 
-			<table style="border: solid 2px green; width: 100%; height: 30%;">
+			<table style="border:  2px gray; width: 100%; height: 30%; margin-top: 2%;">
 
 
 
 				<tr>
 
 
-					<td style="width: 55vw;">
+					<td style="width: 55vw; ">
 
 
 
 						<div
-							style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%;">
+							style="border:  1px gray; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%; ">
 
 							<table>
 								<tr>
@@ -202,11 +206,11 @@ window.onload = init;
 					</td>
 					<td>
 						<div id="recommend"
-							style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%;">
+							style="border:  1px gray; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%; margin-left: 30px; padding-right: 3vw; ">
 
-							<table style="border: solid 2px gray; width: 100%; height: 100%;">
+							<table style="border: 1px ; width: 100%; height: 100%;">
 								<tr>
-									<td colspan="5" style="text-align: center ; height: 15%;">추천 색상</td>
+									<td colspan="5" style="text-align: center ; height: 10%;">추천 머리색</td>
 								</tr>
 								<tr>
 									<td style="background-color: {{colorList[0][1]}}; width: 20%;"></td>
@@ -217,10 +221,10 @@ window.onload = init;
 								</tr>
 								<tr style="height: 25%;">
 									<td style="width : 20%; overflow: hidden;">{{colorList[0][0]}}</td>
-									<td style="width : 20%;overflow: hidden;">{{colorList[1][0]}}</td>
-									<td style="width : 20%;overflow: hidden;">{{colorList[2][0]}}</td>
-									<td style="width : 20%;overflow: hidden;">{{colorList[3][0]}}</td>
-									<td style="width : 20%;overflow: hidden;">{{colorList[4][0]}}</td>
+									<td style="width : 20%; overflow: hidden;">{{colorList[1][0]}}</td>
+									<td style="width : 20%; overflow: hidden;">{{colorList[2][0]}}</td>
+									<td style="width : 20%; overflow: hidden;">{{colorList[3][0]}}</td>
+									<td style="width : 20%; overflow: hidden;">{{colorList[4][0]}}</td>
 
 								</tr>
 							</table>
