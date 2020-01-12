@@ -101,7 +101,7 @@ window.onload = init;
 								<td style="border: solid 2px green; width: 60%;"><img
 									id="img_human" style="width: 100%; height: 100%;"
 									src="../static/img/capture.jpg" alt="사람" /></td>
-								<td><img id="img_star" style="width: 100%; height: 100%;"
+								<td><img id="img_star" style="width: 100%; height: 600px;"
 									src={{celebSrc}} alt="연예인" /></td>
 							</tr>
 
@@ -169,13 +169,46 @@ window.onload = init;
 						<div
 							style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%;">
 
+							<table>
+
+								<tr>
+									<td> <img id="img_hair" style="width: 100px; height: 100px;"
+									src={{hairList[0]}} alt="추천 머리1" /></td>
+
+									<td> <img id="img_hair" style="width: 100px; height: 100px;"
+									src={{hairList[1]}} alt="추천 머리2" /></td>
+
+									<td> <img id="img_hair" style="width: 100px; height: 100px;"
+									src={{hairList[2]}} alt="추천 머리3" /></td>
+
+								</tr>
+
+							</table>
+
 						</div>
 					</td>
 					<td>
 						<div id="recommend"
 							style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 100%;">
+							
+							<table style="border: solid 2px gray; width: 100%; height: 100%;">
+								<tr>
+									<td style="background-color: {{colorList[0][1]}}; width: 20%;"></td>
+									<td style="background-color: {{colorList[1][1]}}; width: 20%;"></td>
+									<td style="background-color: {{colorList[2][1]}}; width: 20%;"></td>
+									<td style="background-color: {{colorList[3][1]}}; width: 20%;"></td>
+									<td style="background-color: {{colorList[4][1]}}; width: 20%;"></td>
+								</tr>
+								<tr>
+									<td style="width : 20%;">{{colorList[0][0]}}</td>
+									<td style="width : 20%;">{{colorList[1][0]}}</td>
+									<td style="width : 20%;">{{colorList[2][0]}}</td>
+									<td style="width : 20%;">{{colorList[3][0]}}</td>
+									<td style="width : 20%;">{{colorList[4][0]}}</td>
+									
+								</tr>
+							</table>
 						</div>
-						{{colorList}}
 
 
 					</td>
@@ -194,8 +227,19 @@ window.onload = init;
 			</div>
 			<div
 				style="border: solid 2px navy; white-space: nowrap; overflow-x: auto; overflow-y: hidden; width: 100%; height: 13vh;">
+				<table>
+
+					<tr>
+						<td> <img id="img_hair" style="width: 100px; height: 100px;"
+									src={{hairList[0]}} alt="추천 머리1" /></td>
+
+						<td> <img id="img_hair" style="width: 100px; height: 100px%;"
+									src={{hairList[1]}} alt="추천 머리2" /></td>
+
+					</tr>
+
+				</table>
 			</div>
-			{{hairList}}
 
 
 		</div>
