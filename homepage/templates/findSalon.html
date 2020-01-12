@@ -48,14 +48,36 @@ body {
 #info_div {
 	width: 90%;
 	height: 90%;
+}
 
+.star-rating {
+	width: 205px;
+}
+
+.star-rating {
+	width: 205px;
+}
+
+.star-rating, .star-rating span {
+	display: inline-block;
+	height: 39px;
+	overflow: hidden;
+	background: url(../static/img/star_.png) no-repeat;
+}
+
+.star-rating span {
+	background-position: left bottom;
+	line-height: 0;
+	vertical-align: top;
 }
 </style>
 <script type="text/javascript"
 	src="https://gis.kt.com/maps/v3.0/sdk.js?key=642dd03a4712cef8bb36de4d06f8dd86565a738470cb4c697fa6cbcff6f8c65c6a66b0c4">
-
+	
 </script>
-<script type="text/javascript" src="../static/js/gis.js"> </script>
+<script type="text/javascript" src="../static/js/gis.js">
+	
+</script>
 
 
 </head>
@@ -64,22 +86,32 @@ body {
 	<div id="form" style="display: none">
 
 		<table
-			style="margin:8px;padding: 2px; width: 100%; height: 100%; background-color: rgba(255, 204, 204, 0.8); border-radius: 20px;">
+			style="margin: 8px; padding: 2px; width: 100%; height: 100%; background-color: rgba(255, 204, 204, 0.8); border-radius: 20px;">
 			<tr>
-
-
-				<td id="name"style="padding: 2px; font-size: x-large">지니살롱</td>
-				<td id="grade">평점 5점</td>
+				<td id="name" style="padding: 2px; font-size: x-large">지니살롱</td>
+				<td id="grade">
+				
+				<div style="text-align:left;width: 60%; height: 60%;margin:2%">
+				<span class='star-rating'> <span
+						style="width: 50%"></span></span>
+						
+				</div>
+				
+				</td>
 			</tr>
 
 			<tr style="height: 60px">
-
-
-				<td id="address"style="width: 70%">경기도 성남시</td>
+				<td style="width: 60%">
+					<table style="width: 100%">
+						<tr>
+							<td id="address">경기도 성남시</td>
+							<td id="dist">300m</td>
+						</tr>
+					</table>
+				</td>
 				<td>
 					<button type="button" id="btn" class="btn btn-danger"
-						onclick='location="reservation.html?"+encodeURIComponent(id)'>예약하기</button>
-
+						onclick='location="reservation.html?"+id'>예약하기</button>
 				</td>
 			</tr>
 
