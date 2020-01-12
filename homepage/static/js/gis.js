@@ -66,7 +66,7 @@ function getData(){
             infoWindowShow(this);
         });
         markers.push(marker);
-		add_salon(_element[2], _element[4] + " " + _element[5], _element[3] + "점"); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
+		add_salon(_element[2], _element[4] + " " + _element[5], _element[3]); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
     }
     });
     me = new olleh.maps.UTMK(1151654.8847289516, 1686265.631509801);
@@ -85,7 +85,7 @@ function add_salon(str_name,str_address,str_grade) {
 	document.getElementById('name').innerHTML = str_name;
 	btn.id = str_name;
 	document.getElementById('address').innerHTML = str_address;
-	//document.getElementById('grade').innerHTML = str_grade;
+	document.getElementById('grade').style.width=str_grade*20+'%';
 	div.innerHTML = document.getElementById('form').innerHTML;
 	document.getElementById('info_div').appendChild(div);
 }
