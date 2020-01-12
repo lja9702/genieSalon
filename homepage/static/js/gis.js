@@ -85,7 +85,7 @@ function add_salon(str_name,str_address,str_grade) {
 	document.getElementById('name').innerHTML = str_name;
 	btn.id = str_name;
 	document.getElementById('address').innerHTML = str_address;
-	document.getElementById('grade').innerHTML = str_grade;
+	//document.getElementById('grade').innerHTML = str_grade;
 	div.innerHTML = document.getElementById('form').innerHTML;
 	document.getElementById('info_div').appendChild(div);
 }
