@@ -27,22 +27,23 @@ def tcpHandler(clientSocket, addr):
 
 	if addr[0] in blockedip:
 		return
+	'''
 	try:
 		recentip[addr[0]] += 1
 	except:
 		recentip[addr[0]] = 1
-	'''	
+	'''
 	print(recentip)
 	print(req_in)
 	print()
 	print()
 	print()
-	'''
 
 	if req_in[:3] == "GET":
 		req_in = req_in.split("GET")
 		req_in = req_in[1].split()
 		f = req_in[0][1:]
+		f = parse.unquote(f)
 		getHandler(f, clientSocket)
 	elif req_in[:4] == "POST":
 		dataIndex = 0
@@ -52,7 +53,9 @@ def tcpHandler(clientSocket, addr):
 				dataIndex = i+1
 				break
 		f = req_in[0].split()[1] 
+		f = parse.unquote(f)
 		data = req_in[dataIndex]
+		data = parse.unquote(data)
 		postHandler(f[1:], data, clientSocket)
 #	clientSocket.close()
 
@@ -152,10 +155,6 @@ def getHandler(f, clientSocket):
 		clientSocket.sendall(res.encode('utf-8'))
 		return
 
-	if '.' not in f:
-		if f != "reservation":
-			f += ".html"
-
 
 	
 	p = ""
@@ -163,11 +162,16 @@ def getHandler(f, clientSocket):
 	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
 	header += "Connection: keep-alive\r\n"
 
+	if '.' not in f:
+		if f != "reservation":
+			f += ".html"
+
+
+
 	if re.search('.html', f, re.IGNORECASE):
 		if '?' in f:
 			f = f.split("?")
 			p = f[1]
-			p = parse.unquote(p)
 			f = f[0]
 		f = "./templates/" + f
 		mimetype = "text/html"
