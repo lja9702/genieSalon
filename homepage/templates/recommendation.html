@@ -77,7 +77,7 @@ function set_warm(num){
 }
 
 function init(){ //김태희 있는 곳에 이름 넣으면 그 이름으로 뜹니다
-	print({{celebName}});
+	print("{{celebName}}");
 	set_warm({{warm}});
 }
 
@@ -136,8 +136,8 @@ window.onload = init;
 							<table style="width: 100%; height: 10%;">
 								<tr>
 									<td id="warm_chart"
-										style="background-color: #FAEB78; width: 50%;">warm {{warm}}%</td>
-									<td id="cool_chart" style="background-color: #AADBFF;">cool
+										style="background-color: #FAEB78; width: {{warm}}%;">warm {{warm}}%</td>
+									<td id="cool_chart" style="background-color: #AADBFF; width: {{cool}}%;">cool
 										{{cool}}%</td>
 								</tr>
 
