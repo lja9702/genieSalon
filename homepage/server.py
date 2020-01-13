@@ -10,7 +10,7 @@ blockedip = []
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip
-	tmp = b'' 
+	tmp = b''
 	tmp = clientSocket.recv(4096)
 	'''
 	while True:
@@ -31,7 +31,7 @@ def tcpHandler(clientSocket, addr):
 		recentip[addr[0]] += 1
 	except:
 		recentip[addr[0]] = 1
-	
+
 	print(recentip)
 	print(req_in)
 	print()
@@ -50,7 +50,7 @@ def tcpHandler(clientSocket, addr):
 			if req_in[i] == '':
 				dataIndex = i+1
 				break
-		f = req_in[0].split()[1] 
+		f = req_in[0].split()[1]
 		data = req_in[dataIndex]
 		postHandler(f[1:], data, clientSocket)
 #	clientSocket.close()
@@ -80,8 +80,8 @@ def postHandler(f, data, clientSocket):
 				rarray.append(tmp.copy())
 			except:
 				pass
-		
-		
+
+
 		s, n, d, t, p = datas["salon"], datas["name"], datas["day"], datas["time"], datas["phone"]
 
 		res = "success"
@@ -123,9 +123,9 @@ def postHandler(f, data, clientSocket):
 	print('post')
 #	print(res)
 	clientSocket.sendall(res.encode('utf-8'))
-	return 	
-	
-	
+	return
+
+
 def getHandler(f, clientSocket):
 
 	if f == "":
@@ -157,7 +157,7 @@ def getHandler(f, clientSocket):
 			f = f[0]
 		f = "./templates/" + f
 		mimetype = "text/html"
-	elif re.search('.xml', f, re.IGNORECASE):		
+	elif re.search('.xml', f, re.IGNORECASE):
 #		f = "./static/xml/" + f
 		mimetype = "text/xml"
 	elif re.search('.css', f, re.IGNORECASE):
@@ -166,14 +166,14 @@ def getHandler(f, clientSocket):
 	elif re.search('.js', f, re.IGNORECASE):
 #		f = "./static/js/" + f
 		mimetype = "text/javascript"
-	elif re.search('.jpg', f, re.IGNORECASE):		
+	elif re.search('.jpg', f, re.IGNORECASE):
 		print(f)
 #		f = "./statc/resource/" + f
 		mimetype = "image/jpg"
-	elif re.search('.jpeg', f, re.IGNORECASE):		
+	elif re.search('.jpeg', f, re.IGNORECASE):
 #		f = "./static/resource/" + f
 		mimetype = "image/jpeg"
-	elif re.search('.png', f, re.IGNORECASE):		
+	elif re.search('.png', f, re.IGNORECASE):
 #		f = "./static/resource/" + f
 		mimetype = "image/png"
 		header += "Content-Type: image/png\r\n"
@@ -195,7 +195,7 @@ def getHandler(f, clientSocket):
 		print(f + " is not found.")
 		clientSocket.sendall(header.encode('utf-8'))
 		return
-		
+
 
 	res = rf.read()
 	if p != "":
@@ -208,10 +208,10 @@ def getHandler(f, clientSocket):
 	header += "\r\n"
 	print(header)
 	res = header.encode("utf-8") + res
-	
+
 #	res = header + res
 #	print(res)
-	
+
 #	print(res)
 	clientSocket.sendall(res)
 
@@ -231,7 +231,7 @@ def dosHandler():
 				blockedip.append(i)
 			else:
 				recentip[i] = 0
-	
+
 
 if __name__ == "__main__":
 	tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
