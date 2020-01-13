@@ -68,7 +68,7 @@ function getData(){
 			});
 			markers.push(marker);
 			console.log(_element)
-			add_salon(_element[2], _element[4] + " " + _element[5], _element[3] + "점", parseInt(dist) + " m", pastName); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
+			add_salon(_element[2], _element[4] + " " + _element[5], _element[3], parseInt(dist) + " m", pastName); //이런식으로 이름,주소,평점순으로 값을 넣으면 됩니다.
 			pastName = _element[2]
 		}
     });
@@ -87,7 +87,7 @@ function add_salon(str_name,str_address,str_grade, str_dist, pastName) {
 	var div = document.createElement('div');
 	document.getElementById('name').innerHTML = str_name;
 	document.getElementById('address').innerHTML = str_address;
-	document.getElementById('grade').innerHTML = str_grade;
+	document.getElementById('grade').style.width=str_grade*20+'%';
 	document.getElementById('dist').innerHTML = str_dist;
 	var btnid = document.getElementById(pastName);	
 	btnid.id = str_name;
