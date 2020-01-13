@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<meta name="viewport"
+	content="height=device-height, width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../static/css/bootstrap.css">
+<style>
+body {
+	background-image: url('../static/img/bgimg.jpg');
+	background-repeat: no-repeat; /* 반복 안함 */
+	background-size: cover;
+	font-family: 'BMJUA_ttf';
+}
+
+@FONT-FACE {
+	font-family: 'BMJUA_ttf';
+	src: url("../static/font/BMJUA_ttf.ttf");
+}
+
+#full {
+	width: 98vw;
+	height: 96vh;
+	background-color: rgba(255, 255, 255, 0.6);
+	margin: 1vw;
+	padding: 2vw;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 20px;
+	padding:15% 0 0 40%;
+}
+
+#full span {
+	font-size: 40px;
+}
+
+#full div {
+	margin: 2vw;
+	font-size: 32px;
+}
+</style>
+</head>
+<body>
+<div id="full">
+		<table>
+		<tr>
+		<td>
+		<span>예약 결과</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+		<span>예약 성공하셨습니다.</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+		<button type="button" class="btn btn-danger"
+		onclick="location='main.html'">메인으로</button>
+		</td>
+		</tr>	
+		
+		</table>
+</div>
+
+
+<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+</body>
+</html>
+

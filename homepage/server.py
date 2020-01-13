@@ -27,11 +27,12 @@ def tcpHandler(clientSocket, addr):
 
 	if addr[0] in blockedip:
 		return
+	'''
 	try:
 		recentip[addr[0]] += 1
 	except:
 		recentip[addr[0]] = 1
-
+	'''
 	print(recentip)
 	print(req_in)
 	print()
@@ -42,6 +43,7 @@ def tcpHandler(clientSocket, addr):
 		req_in = req_in.split("GET")
 		req_in = req_in[1].split()
 		f = req_in[0][1:]
+		f = parse.unquote(f)
 		getHandler(f, clientSocket)
 	elif req_in[:4] == "POST":
 		dataIndex = 0
@@ -51,7 +53,9 @@ def tcpHandler(clientSocket, addr):
 				dataIndex = i+1
 				break
 		f = req_in[0].split()[1]
+		f = parse.unquote(f)
 		data = req_in[dataIndex]
+		data = parse.unquote(data)
 		postHandler(f[1:], data, clientSocket)
 #	clientSocket.close()
 
@@ -84,18 +88,24 @@ def postHandler(f, data, clientSocket):
 
 		s, n, d, t, p = datas["salon"], datas["name"], datas["day"], datas["time"], datas["phone"]
 
-		res = "success"
+		sucFile = open("./templates/result_success.html", "rb")
+		res = sucFile.read()
+		sucFile.close()
 		header = "HTTP/1.1 200 OK\r\n"
 		flag = True
 		for i in rarray:
 			if i["day"] == d and i["time"] == t:
-				if i["name"] == n:
+				if i["phone"] == p:
+					failFile = open("./templates/result_fail.html", "rb")
+					res = failFile.read()
+					failFile.close()
 					header = "HTTP/1.1 500 ERROR OCCURED\r\n"
-					res = "person"
 					flag = False
 				elif i["salon"] == s:
+					failFile = open("./templates/result_fail.html", "rb")
+					res = failFile.read()
 					header = "HTTP/1.1 500 ERROR OCCURED\r\n"
-					res = "shop"
+					failFile.close()
 					flag = False
 
 		if flag:
@@ -116,13 +126,14 @@ def postHandler(f, data, clientSocket):
 
 	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
 	header += "Connection: keep-alive\r\n"
-	header += "Content-Type: application/json\r\n"
+	header += "Content-Type: text/html\r\n"
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "\r\n"
+	header = header.encode('utf-8')
 	res = header + res
 	print('post')
 #	print(res)
-	clientSocket.sendall(res.encode('utf-8'))
+	clientSocket.sendall(res)
 	return
 
 
@@ -134,7 +145,6 @@ def getHandler(f, clientSocket):
 		ff = open("./static/resource/favicon.ico", 'rb')
 		fi = ff.read()
 		ff.close()
-
 		j = json.dumps({'foo':'my json', 'a':fi.decode('utf-8')})
 		header = "HTTP/1.1 200 OK\r\n"
 		header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
@@ -144,16 +154,24 @@ def getHandler(f, clientSocket):
 		res = header + j
 		clientSocket.sendall(res.encode('utf-8'))
 		return
+
+
+
 	p = ""
 	header = "HTTP/1.1 200 OK\r\n"
 	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
 	header += "Connection: keep-alive\r\n"
 
+	if '.' not in f:
+		if f != "reservation":
+			f += ".html"
+
+
+
 	if re.search('.html', f, re.IGNORECASE):
 		if '?' in f:
 			f = f.split("?")
 			p = f[1]
-			p = parse.unquote(p)
 			f = f[0]
 		f = "./templates/" + f
 		mimetype = "text/html"
@@ -167,7 +185,6 @@ def getHandler(f, clientSocket):
 #		f = "./static/js/" + f
 		mimetype = "text/javascript"
 	elif re.search('.jpg', f, re.IGNORECASE):
-		print(f)
 #		f = "./statc/resource/" + f
 		mimetype = "image/jpg"
 	elif re.search('.jpeg', f, re.IGNORECASE):
@@ -201,12 +218,12 @@ def getHandler(f, clientSocket):
 	if p != "":
 		res = res.decode('utf-8')
 		res = res.replace("지니살롱", p)
-		print(res)
+#print(res)
 		res = res.encode('utf-8')
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "Content-Type: " + mimetype + "\r\n"
 	header += "\r\n"
-	print(header)
+#print(header)
 	res = header.encode("utf-8") + res
 
 #	res = header + res
