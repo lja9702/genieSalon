@@ -27,10 +27,10 @@ def tcpHandler(clientSocket, addr):
 
 	if addr[0] in blockedip:
 		return
-	try:
-		recentip[addr[0]] += 1
-	except:
-		recentip[addr[0]] = 1
+#	try:
+#		recentip[addr[0]] += 1
+#	except:
+#		recentip[addr[0]] = 1
 	
 	print(recentip)
 	print(req_in)
@@ -134,7 +134,6 @@ def getHandler(f, clientSocket):
 		ff = open("./static/resource/favicon.ico", 'rb')
 		fi = ff.read()
 		ff.close()
-
 		j = json.dumps({'foo':'my json', 'a':fi.decode('utf-8')})
 		header = "HTTP/1.1 200 OK\r\n"
 		header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
@@ -144,6 +143,13 @@ def getHandler(f, clientSocket):
 		res = header + j
 		clientSocket.sendall(res.encode('utf-8'))
 		return
+
+	if '.' not in f:
+		if f != "reservation":
+			f += ".html"
+
+
+	
 	p = ""
 	header = "HTTP/1.1 200 OK\r\n"
 	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
