@@ -10,9 +10,10 @@ from flask import current_app as current_app
 
 class DetectTone:
 
-    def __init__(self):
+    def __init__(self, index):
+        self.index = index
         # 입력 얼굴사진 지정하기
-        self.image_file = "static/img/capture.jpg"
+        self.image_file = "./pimg/capture"+str(index)+".jpg"
         
         self.detector = dlib.get_frontal_face_detector()
 

@@ -4,12 +4,78 @@ import threading
 import time
 import re
 import json
+from detect_shape import DetectShape
+from detect_gender import DetectGender
+from find_tone import DetectTone
+from recommend_hair import MatchHair
 from urllib import parse
+import random
+import os
 
 recentip = {}
 blockedip = []
 BFSIZE = 4096
 imgindex = -1
+
+
+def find_celeb():
+	global detect_shape, detect_gender
+	global imgindex
+
+
+	shape = detect_shape.shape
+	gender = detect_gender.gender
+
+	print("shape: %s gender: %s" %(shape, gender))
+
+	img_path = "static/img/celeb/" + gender + "/" + shape
+	#특정 얼굴형 젠더에서 랜덤으로 사진 가져오기
+	_file = random.choice([
+    x for x in os.listdir(img_path)
+    if os.path.isfile(os.path.join(img_path, x)) and
+    x.endswith('.jpg')])
+	celeb_src = img_path + "/" + _file
+
+	return [str(celeb_src), _file[:-4]]
+
+
+
+
+def camtorecommend_page():
+	global detect_shape, detect_gender
+	detect_shape = DetectShape(imgindex)
+	detect_gender = DetectGender(imgindex)
+	detect_shape.measure_face_shape()
+	detect_gender.detectowngender()
+	celeb_src , celeb_name = find_celeb()
+	find_tone = DetectTone(imgindex)
+	color_list, cool = find_tone.detectowntone()
+	warm = str(100 - int(cool))
+	cool = str(int(cool))
+
+	match_hair = MatchHair()
+	print("shape: %s gender: %s" %(detect_shape.shape, detect_gender.gender))
+	hair_list = match_hair.hairstyle_src_list(shape = detect_shape.shape, gender = detect_gender.gender)
+	resfile = open("./templates/recommendation.html", 'r')
+	res = resfile.read()
+	resfile.close()
+	image_name = "./pimg/capture" + str(imgindex) + ".jpg"
+	res = res.replace("{{celebSrc}}", celeb_src)
+	res = res.replace("{{celebName}}", celeb_name)
+	print(len(color_list[0]), type(color_list[0][0]))
+	for i in range(4):
+		try:
+			res = res.replace("{{colorList["+str(i)+"][1]}}", color_list[i][1])
+		except:
+			pass
+	res = res.replace("{{cool}}", str(cool))
+	res = res.replace("{{warm}}", str(warm))
+	for i in range(4):
+		res = res.replace("{{hairList["+str(i)+"]}}", hair_list[i])
+	res = res.replace("{{imageName}}", "../../"+image_name)
+	return res
+	
+
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
@@ -25,14 +91,11 @@ def tcpHandler(clientSocket, addr):
 		tmp = b'' 
 		size = 0
 		for i in range(cnt):
-#		tmp = clientSocket.recvall()
+			time.sleep(0.1)
 			ttmp = clientSocket.recv(BFSIZE)
-#		print("ssss")
-#		print(len(ttmp))
-#		print("eeee")
 			size += len(ttmp)
 			tmp += ttmp
-			print(i, cnt)
+			print(i, cnt, len(ttmp))
 		print("size: " + str(size))
 		imgindex += 1
 		wf = open("./pimg/capture" + str(imgindex) + ".jpg", "wb")
@@ -160,7 +223,10 @@ def postHandler(f, data, clientSocket):
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "\r\n"
 	header = header.encode('utf-8')
-	res = header + res.encode('utf-8')
+	try:
+		res = header + res.encode('utf-8')
+	except:
+		res = header + res
 	print('post')
 #	print(res)
 	clientSocket.sendall(res)
@@ -205,32 +271,24 @@ def getHandler(f, clientSocket):
 		f = "./templates/" + f
 		mimetype = "text/html"
 	elif re.search('.xml', f, re.IGNORECASE):		
-#		f = "./static/xml/" + f
 		mimetype = "text/xml"
 	elif re.search('.css', f, re.IGNORECASE):
-#		f = "./static/css/" + f
 		mimetype = "text/css"
 	elif re.search('.js', f, re.IGNORECASE):
-#		f = "./static/js/" + f
 		mimetype = "text/javascript"
 	elif re.search('.jpg', f, re.IGNORECASE):		
-#		f = "./statc/resource/" + f
 		mimetype = "image/jpg"
 	elif re.search('.jpeg', f, re.IGNORECASE):		
-#		f = "./static/resource/" + f
 		mimetype = "image/jpeg"
 	elif re.search('.png', f, re.IGNORECASE):		
-#		f = "./static/resource/" + f
 		mimetype = "image/png"
 		header += "Content-Type: image/png\r\n"
 	elif re.search('mp4', f, re.IGNORECASE):
-#		f = "./static/resource/" + f
 		mimetype = "video/mp4"
 	elif re.search('.ico', f, re.IGNORECASE):
 		f = "./static/img/" + f
 		mimetype = "image/vnd.microsoft.icon"
 	else:
-#		f = "./static/resource/" + f
 		mimetype = "Application/octet-stream"
 
 	try:
@@ -247,9 +305,13 @@ def getHandler(f, clientSocket):
 		res = res.decode('utf-8')
 		res = res.replace("지니살롱", p[0])
 		res = res.encode('utf-8')
+	if re.search("recommendation.html", f, re.IGNORECASE):
+		res = camtorecommend_page()
+		res = res.encode("utf-8")
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "Content-Type: " + mimetype + "\r\n"
 	header += "\r\n"
+
 
 	res = header.encode("utf-8") + res
 	clientSocket.sendall(res)
