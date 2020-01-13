@@ -8,25 +8,45 @@ from urllib import parse
 
 recentip = {}
 blockedip = []
+BFSIZE = 4096
+imgindex = -1
 
 def tcpHandler(clientSocket, addr):
-	global recentip, blockedip
+	global recentip, blockedip, BFSIZE, imgindex
 
-#	tmp = clientSocket.recv(4096)
-	tmp = b''
-	size = 0
-	while True:
+	tmp = clientSocket.recv(BFSIZE)
+	print(tmp)
+	try:
+		size = int(tmp)
+		cnt = int(size / BFSIZE)
+		if size % BFSIZE != 0:
+			print('hi')
+			cnt += 1
+		tmp = b''
+		size = 0
+		for i in range(cnt):
 #		tmp = clientSocket.recvall()
-		ttmp = clientSocket.recv(4096)
+			ttmp = clientSocket.recv(BFSIZE)
 #		print("ssss")
 #		print(len(ttmp))
 #		print("eeee")
-		size += len(ttmp)
-		tmp += ttmp
+			size += len(ttmp)
+			tmp += ttmp
+			print(i, cnt)
+		print("size: " + str(size))
+		imgindex += 1
+		wf = open("./pimg/capture" + str(imgindex) + ".jpg", "wb")
+		wf.write(tmp)
+		wf.close()
+		header = "HTTP/1.1 200 OK\r\n"
+		res = "SUCCESS"
+		clientSocket.sendall((header+res).encode())
 
-		if len(ttmp) < 4096:
-			print("size: " + str(size))
-			break
+		return
+
+	except:
+		print("except")
+		print(sys.exc_info())
 
 	req_in = tmp.decode("utf-8")
 
@@ -68,7 +88,7 @@ def postHandler(f, data, clientSocket):
 
 	print("post")
 	print(f)
-	print(data)
+#	print(data)
 	if f != "upload":
 		data = parse.unquote(data)
 	data = data.split("&")
@@ -126,7 +146,7 @@ def postHandler(f, data, clientSocket):
 	elif f == "upload":
 #	try:
 		wf = open("./pimg/" + datas["hi"], "wb")
-		wf.write(datas["capture"])
+		wf.write(datas["capture"].encode())
 		wf.close()
 		header = "HTTP/1.1 200 OK\r\n"
 		res = "SUCCESS"
