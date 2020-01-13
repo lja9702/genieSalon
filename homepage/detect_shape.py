@@ -70,7 +70,7 @@ class DetectShape:
                 # 이미지 랜드마크 좌표 지점에 인덱스(랜드마크번호, 여기선 i)를 putText로 표시해준다.
                 # cv2.putText(cvImg, str(i), (x, y), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.3, (0, 255, 0))
             # 랜드마크가 표시된 이미지를 openCV 윈도에 표시
-            cv2.imshow('Face', cvImg)
+            #cv2.imshow('Face', cvImg)
 
         # 무한 대기를 타고 있다가 ESC 키가 눌리면 빠져나와 다음 이미지를 검색한다.
         # while True:

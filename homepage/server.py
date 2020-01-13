@@ -1,4 +1,5 @@
 import socket
+import sys
 import threading
 import time
 import re
@@ -10,19 +11,23 @@ blockedip = []
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip
+
+#	tmp = clientSocket.recv(4096)
 	tmp = b''
-	tmp = clientSocket.recv(4096)
-	'''
+	size = 0
 	while True:
-		tmp = clientSocket.recvall()
+#		tmp = clientSocket.recvall()
 		ttmp = clientSocket.recv(4096)
-		if len(ttmp) == 0:
-			break
-		print("ssss")
-		print(len(ttmp))
-		print("eeee")
+#		print("ssss")
+#		print(len(ttmp))
+#		print("eeee")
+		size += len(ttmp)
 		tmp += ttmp
-	'''
+
+		if len(ttmp) < 4096:
+			print("size: " + str(size))
+			break
+
 	req_in = tmp.decode("utf-8")
 
 	if addr[0] in blockedip:
@@ -55,12 +60,17 @@ def tcpHandler(clientSocket, addr):
 		f = req_in[0].split()[1]
 		f = parse.unquote(f)
 		data = req_in[dataIndex]
-		data = parse.unquote(data)
+#		data = parse.unquote(data)
 		postHandler(f[1:], data, clientSocket)
 #	clientSocket.close()
 
 def postHandler(f, data, clientSocket):
+
+	print("post")
+	print(f)
 	print(data)
+	if f != "upload":
+		data = parse.unquote(data)
 	data = data.split("&")
 	datas = {}
 	for d in data:
@@ -115,11 +125,11 @@ def postHandler(f, data, clientSocket):
 			wf.close()
 	elif f == "upload":
 #	try:
-			wf = open("./pimg/" + datas["name"], "wb")
-			wf.write(datas["image"].encode())
-			wf.close()
-			header = "HTTP/1.1 200 OK\r\n"
-			res = "SUCCESS"
+		wf = open("./pimg/" + datas["hi"], "wb")
+		wf.write(datas["capture"])
+		wf.close()
+		header = "HTTP/1.1 200 OK\r\n"
+		res = "SUCCESS"
 #		except:
 #			header = "HTTP/1.1 500 ERROR OCCURED\r\n"
 #			res = "NO"
@@ -130,7 +140,7 @@ def postHandler(f, data, clientSocket):
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "\r\n"
 	header = header.encode('utf-8')
-	res = header + res
+	res = header + res.encode('utf-8')
 	print('post')
 #	print(res)
 	clientSocket.sendall(res)
@@ -142,7 +152,7 @@ def getHandler(f, clientSocket):
 	if f == "":
 		f = "main.html"
 	if f == "my_json":
-		ff = open("./static/resource/favicon.ico", 'rb')
+		ff = open("./static/img/favicon.ico", 'rb')
 		fi = ff.read()
 		ff.close()
 		j = json.dumps({'foo':'my json', 'a':fi.decode('utf-8')})
@@ -165,14 +175,13 @@ def getHandler(f, clientSocket):
 	if '.' not in f:
 		if f != "reservation":
 			f += ".html"
-
-
+	if '?' in f:
+		f = f.split("?")
+		p = f[1]
+		f = f[0]
+		p = p.split("&")
 
 	if re.search('.html', f, re.IGNORECASE):
-		if '?' in f:
-			f = f.split("?")
-			p = f[1]
-			f = f[0]
 		f = "./templates/" + f
 		mimetype = "text/html"
 	elif re.search('.xml', f, re.IGNORECASE):
@@ -194,13 +203,12 @@ def getHandler(f, clientSocket):
 #		f = "./static/resource/" + f
 		mimetype = "image/png"
 		header += "Content-Type: image/png\r\n"
-	elif re.search('.ico', f, re.IGNORECASE):
-		f = "./static/resource/" + f
-		mimetype = "image/jpg"
-		header += "Content-Type: image/jpg\r\n"
 	elif re.search('mp4', f, re.IGNORECASE):
 #		f = "./static/resource/" + f
 		mimetype = "video/mp4"
+	elif re.search('.ico', f, re.IGNORECASE):
+		f = "./static/img/" + f
+		mimetype = "image/vnd.microsoft.icon"
 	else:
 #		f = "./static/resource/" + f
 		mimetype = "Application/octet-stream"
@@ -215,28 +223,17 @@ def getHandler(f, clientSocket):
 
 
 	res = rf.read()
-	if p != "":
+	if len(p) > 1 or (len(p) == 1 and p != ""):
 		res = res.decode('utf-8')
-		res = res.replace("지니살롱", p)
-#print(res)
+		res = res.replace("지니살롱", p[0])
 		res = res.encode('utf-8')
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "Content-Type: " + mimetype + "\r\n"
 	header += "\r\n"
-#print(header)
+
 	res = header.encode("utf-8") + res
-
-#	res = header + res
-#	print(res)
-
-#	print(res)
 	clientSocket.sendall(res)
-
 	rf.close()
-#	l.close()
-
-#	except:
-#		pass
 
 def dosHandler():
 	global recentip, blockedip
@@ -255,7 +252,7 @@ if __name__ == "__main__":
 	host = socket.gethostbyname(socket.gethostname())
 #	tcpSocket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	tcpSocket.bind(("0.0.0.0", 8070))
+	tcpSocket.bind(("0.0.0.0", int(sys.argv[1])))
 	tcpSocket.listen(100)
 
 	dosThread = threading.Thread(target=dosHandler, args=())
