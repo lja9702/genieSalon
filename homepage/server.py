@@ -89,7 +89,7 @@ def postHandler(f, data, clientSocket):
 		flag = True
 		for i in rarray:
 			if i["day"] == d and i["time"] == t:
-				if i["name"] == n:
+				if i["phone"] == p:
 					header = "HTTP/1.1 500 ERROR OCCURED\r\n"
 					res = "person"
 					flag = False
