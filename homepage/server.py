@@ -41,8 +41,6 @@ def find_celeb():
 	return [str(celeb_src), _file[:-4]]
 
 
-
-
 def camtorecommend_page():
 	global detect_shape, detect_gender
 
@@ -92,6 +90,53 @@ def readIndex(flag=False):
 		imginfile.close()
 	return imgindex
 
+def reserve(datas):
+	rarray = []
+	rf = open("./db/db.txt", "r")
+	read = rf.read()
+	rf.close()
+	read = read.split("\n")
+	for r in read:
+		tmp = {}
+		r = r.split('\t')
+#			print(r)
+		try:
+			for _r in r:
+				rr = _r.split("=")
+				tmp[rr[0]] = rr[1]
+			rarray.append(tmp.copy())
+		except:
+			pass
+
+
+	s, n, d, t, p = datas["salon"], datas["name"], datas["day"], datas["time"], datas["phone"]
+
+	sucFile = open("./templates/result_success.html", "rb")
+	res = sucFile.read()
+	sucFile.close()
+	header = "HTTP/1.1 200 OK\r\n"
+	flag = True
+	for i in rarray:
+		if i["day"] == d and i["time"] == t:
+			if i["phone"] == p:
+				failFile = open("./templates/result_fail.html", "rb")
+				res = failFile.read()
+				failFile.close()
+				header = "HTTP/1.1 500 ERROR OCCURED\r\n"
+				flag = False
+			elif i["salon"] == s:
+				failFile = open("./templates/result_fail.html", "rb")
+				res = failFile.read()
+				header = "HTTP/1.1 500 ERROR OCCURED\r\n"
+				failFile.close()
+				flag = False
+	if flag:
+		wf = open("./db/db.txt", "a")
+		towrite = "salon="+s + "\tname=" + n + "\tday=" + d + "\ttime=" + t + "\tphone=" + p + "\n"
+		wf.write(towrite)
+		wf.close()
+	return (header, res)
+
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
@@ -126,7 +171,7 @@ def tcpHandler(clientSocket, addr):
 
 	except:
 		print("except")
-		print(sys.exc_info())
+#	print(sys.exc_info())
 
 	req_in = tmp.decode("utf-8")
 
@@ -178,6 +223,7 @@ def postHandler(f, data, clientSocket):
 		datas[tmp_d[0]] = tmp_d[1]
 
 	if f == "reservation":
+		'''
 		rarray = []
 		rf = open("./db/db.txt", "r")
 		read = rf.read()
@@ -217,12 +263,10 @@ def postHandler(f, data, clientSocket):
 					header = "HTTP/1.1 500 ERROR OCCURED\r\n"
 					failFile.close()
 					flag = False
-
-		if flag:
-			wf = open("./db/db.txt", "a")
-			towrite = "salon="+s + "\tname=" + n + "\tday=" + d + "\ttime=" + t + "\tphone=" + p + "\n"
-			wf.write(towrite)
-			wf.close()
+		'''
+		
+		header, res = reserve(datas)
+		
 	elif f == "upload":
 #	try:
 		wf = open("./pimg/" + datas["hi"], "wb")
@@ -260,7 +304,7 @@ def getHandler(f, clientSocket):
 		ff.close()
 		j = json.dumps({'foo':'my json', 'a':fi.decode('utf-8')})
 		header = "HTTP/1.1 200 OK\r\n"
-		header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
+		header += "Keep-Alive: timeout=10, max=100\r\n" 
 		header += "Connection: keep-alive\r\n"
 		header += "Content-Type: application/json\r\n"
 		header += "\r\n"
@@ -272,17 +316,18 @@ def getHandler(f, clientSocket):
 
 	p = ""
 	header = "HTTP/1.1 200 OK\r\n"
-	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
+	header += "Keep-Alive: timeout=10, max=100\r\n" 
 	header += "Connection: keep-alive\r\n"
-
-	if '.' not in f:
-		if f != "reservation":
-			f += ".html"
 	if '?' in f:
 		f = f.split("?")
 		p = f[1]
 		f = f[0]
 		p = p.split("&")
+
+	if '.' not in f:
+		if f != "reservation":
+			f += ".html"
+
 
 	if re.search('.html', f, re.IGNORECASE):
 		f = "./templates/" + f
@@ -318,10 +363,20 @@ def getHandler(f, clientSocket):
 
 
 	res = rf.read()
-	if len(p) > 1 or (len(p) == 1 and p != ""):
+	print(p)
+	if len(p) == 1 and p != "":
 		res = res.decode('utf-8')
 		res = res.replace("지니살롱", p[0])
 		res = res.encode('utf-8')
+	elif len(p) == 5:
+#res = res.decode('utf-8')
+		datas = {}
+		for d in p:
+			tmp_d = d.split("=", 1)
+			datas[tmp_d[0]] = tmp_d[1]
+		header, res = reserve(datas)
+
+
 	if re.search("recommendation.html", f, re.IGNORECASE):
 		res = camtorecommend_page()
 		res = res.encode("utf-8")
