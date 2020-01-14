@@ -287,12 +287,7 @@ def getHandler(f, clientSocket):
 	if re.search('.html', f, re.IGNORECASE):
 		f = "./templates/" + f
 		mimetype = "text/html"
-<<<<<<< HEAD
 	elif re.search('.xml', f, re.IGNORECASE):
-#		f = "./static/xml/" + f
-=======
-	elif re.search('.xml', f, re.IGNORECASE):
->>>>>>> d1f713e8fee7c3e88d231fec4710aaec975b71d2
 		mimetype = "text/xml"
 	elif re.search('.css', f, re.IGNORECASE):
 		mimetype = "text/css"

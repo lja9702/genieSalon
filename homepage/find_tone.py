@@ -10,12 +10,12 @@ from flask import current_app as current_app
 
 class DetectTone:
 
-    def __init__(self):
+    def __init__(self, imgindex):
         # 입력 얼굴사진 지정하기
-        self.image_file = "static/img/capture.jpg"
+        self.image_file = "./pimg/capture"+str(imgindex)+".jpg"
 
         self.detector = dlib.get_frontal_face_detector()
-
+        self.imgindex = imgindex
         self.yourtone = {}
         #plt.imshow(img)
         #plt.show()
@@ -224,7 +224,7 @@ class DetectTone:
 #         return render_template('/index.html',recoColorValueHtml=recoColorValue, recoColorNameHtml=recoColorName, toneHtml=tone)
 #
 
-homepage/templates/recomme
+#homepage/templates/recomme
 #todo=DetectTone()
 #print(todo.detectowntone())
 # print(todo.send_tone_to_html())
