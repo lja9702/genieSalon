@@ -80,7 +80,7 @@ def camtorecommend_page():
 		res = res.replace("{{hairList["+str(i)+"]}}", hair_list[i])
 	res = res.replace("{{imageName}}", "../../"+image_name)
 	return res
-	
+
 def readIndex(flag=False):
 	imginfile = open("./pimg/index.txt", "r")
 	imgindex = int(imginfile.read())
@@ -95,7 +95,7 @@ def readIndex(flag=False):
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
-	
+
 	tmp = clientSocket.recv(BFSIZE)
 	print(tmp)
 	try:
@@ -104,7 +104,7 @@ def tcpHandler(clientSocket, addr):
 		if size % BFSIZE != 0:
 			cnt += 1
 #		cnt += 1
-		tmp = b'' 
+		tmp = b''
 		size = 0
 		for i in range(cnt):
 			time.sleep(0.08)
@@ -157,7 +157,7 @@ def tcpHandler(clientSocket, addr):
 			if req_in[i] == '':
 				dataIndex = i+1
 				break
-		f = req_in[0].split()[1] 
+		f = req_in[0].split()[1]
 		f = parse.unquote(f)
 		data = req_in[dataIndex]
 #		data = parse.unquote(data)
@@ -194,8 +194,8 @@ def postHandler(f, data, clientSocket):
 				rarray.append(tmp.copy())
 			except:
 				pass
-		
-		
+
+
 		s, n, d, t, p = datas["salon"], datas["name"], datas["day"], datas["time"], datas["phone"]
 
 		sucFile = open("./templates/result_success.html", "rb")
@@ -247,9 +247,9 @@ def postHandler(f, data, clientSocket):
 #	print('post')
 #	print(res)
 	clientSocket.sendall(res)
-	return 	
-	
-	
+	return
+
+
 def getHandler(f, clientSocket):
 
 	if f == "":
@@ -269,7 +269,7 @@ def getHandler(f, clientSocket):
 		return
 
 
-	
+
 	p = ""
 	header = "HTTP/1.1 200 OK\r\n"
 	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
@@ -287,17 +287,17 @@ def getHandler(f, clientSocket):
 	if re.search('.html', f, re.IGNORECASE):
 		f = "./templates/" + f
 		mimetype = "text/html"
-	elif re.search('.xml', f, re.IGNORECASE):		
+	elif re.search('.xml', f, re.IGNORECASE):
 		mimetype = "text/xml"
 	elif re.search('.css', f, re.IGNORECASE):
 		mimetype = "text/css"
 	elif re.search('.js', f, re.IGNORECASE):
 		mimetype = "text/javascript"
-	elif re.search('.jpg', f, re.IGNORECASE):		
+	elif re.search('.jpg', f, re.IGNORECASE):
 		mimetype = "image/jpg"
-	elif re.search('.jpeg', f, re.IGNORECASE):		
+	elif re.search('.jpeg', f, re.IGNORECASE):
 		mimetype = "image/jpeg"
-	elif re.search('.png', f, re.IGNORECASE):		
+	elif re.search('.png', f, re.IGNORECASE):
 		mimetype = "image/png"
 		header += "Content-Type: image/png\r\n"
 	elif re.search('mp4', f, re.IGNORECASE):
@@ -315,7 +315,7 @@ def getHandler(f, clientSocket):
 		print(f + " is not found.")
 		clientSocket.sendall(header.encode('utf-8'))
 		return
-		
+
 
 	res = rf.read()
 	if len(p) > 1 or (len(p) == 1 and p != ""):
@@ -344,11 +344,11 @@ def dosHandler():
 				blockedip.append(i)
 			else:
 				recentip[i] = 0
-	
+
 
 if __name__ == "__main__":
 	tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, BFSIZE)  
+	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, BFSIZE)
 	host = socket.gethostbyname(socket.gethostname())
 #	tcpSocket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

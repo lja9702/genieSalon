@@ -10,13 +10,12 @@ from flask import current_app as current_app
 
 class DetectTone:
 
-    def __init__(self, index):
-        self.index = index
+    def __init__(self, imgindex):
         # 입력 얼굴사진 지정하기
-        self.image_file = "./pimg/capture"+str(index)+".jpg"
-        
-        self.detector = dlib.get_frontal_face_detector()
+        self.image_file = "./pimg/capture"+str(imgindex)+".jpg"
 
+        self.detector = dlib.get_frontal_face_detector()
+        self.imgindex = imgindex
         self.yourtone = {}
         #plt.imshow(img)
         #plt.show()
@@ -38,10 +37,10 @@ class DetectTone:
             return "warm"
 
     def detectowntone(self):
-        
+
         img = cv2.imread(self.image_file)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
+
         #plt.imshow(img)
         #plt.show()
 
@@ -50,17 +49,17 @@ class DetectTone:
 
         # 인식한 부분 표시하기
         #print(face_list)
-        
+
         # 인식할 얼굴이 없음
         if len(faces) == 0:
             print("no face")
-            return 
-        
+            return
+
         for face in faces:
-            
-            
+
+
             x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
-            
+
 
             img_clone = img[y1:y2, x1+int(1/4*(x2-x1)):x2-int(1/4*(x2-x1))].copy()
 #             plt.imshow(img_clone)
@@ -171,12 +170,26 @@ class DetectTone:
 
         #RGB 형식 변환 255,255,255 에서 FFFFFF으로
         for tone in cooltone:
-            tone[1:4]=["#"+str(hex(int(tone[1])))[2:]+str(hex(int(tone[2])))[2:]+str(hex(int(tone[3])))[2:]]
+            r_hex = str(hex(int(tone[1])))[2:]
+            if len(r_hex) < 2:
+                r_hex = "0" + r_hex
+            g_hex = str(hex(int(tone[2])))[2:]
+            b_hex = str(hex(int(tone[3])))[2:]
+
+            tone[1:4]=["#"+r_hex+g_hex+b_hex]
+
             del tone[2]
 
 
         for tone in warmtone:
-            tone[1:4]=["#"+str(hex(int(tone[1])))[2:]+str(hex(int(tone[2])))[2:]+str(hex(int(tone[3])))[2:]]
+            r_hex = str(hex(int(tone[1])))[2:]
+            if len(r_hex) < 2:
+                r_hex = "0" + r_hex
+            g_hex = str(hex(int(tone[2])))[2:]
+            b_hex = str(hex(int(tone[3])))[2:]
+
+            tone[1:4]=["#"+r_hex+g_hex+b_hex]
+
             del tone[2]
 
         #print(cooltone)
@@ -211,7 +224,7 @@ class DetectTone:
 #         return render_template('/index.html',recoColorValueHtml=recoColorValue, recoColorNameHtml=recoColorName, toneHtml=tone)
 #
 
-
+#homepage/templates/recomme
 #todo=DetectTone()
 #print(todo.detectowntone())
 # print(todo.send_tone_to_html())
