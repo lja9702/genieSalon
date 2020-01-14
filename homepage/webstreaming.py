@@ -34,6 +34,11 @@ stop_record = False	#동영상 출력 종료 여부 변수
 def findsalon_page():
 	return render_template("findSalon.html")
 
+@app.route("/reservation")
+def reservation_page():
+	return render_template("reservation.html")
+
+
 @app.route("/main")
 def main_page():
 	return render_template("main.html")

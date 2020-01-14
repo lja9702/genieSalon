@@ -23,7 +23,7 @@ faceshapes = {"ang":"각진 얼굴", "egg":"계란형 얼굴", "round":"둥근�
 def find_celeb():
 	global detect_shape, detect_gender
 	global imgindex
-
+	imgindex = readIndex()
 
 	shape = detect_shape.shape
 	gender = detect_gender.gender
@@ -41,10 +41,10 @@ def find_celeb():
 	return [str(celeb_src), _file[:-4]]
 
 
-
-
 def camtorecommend_page():
 	global detect_shape, detect_gender
+
+	imgindex = readIndex()
 	detect_shape = DetectShape(imgindex)
 	detect_gender = DetectGender(imgindex)
 	detect_shape.measure_face_shape()
@@ -78,21 +78,78 @@ def camtorecommend_page():
 		res = res.replace("{{hairList["+str(i)+"]}}", hair_list[i])
 	res = res.replace("{{imageName}}", "../../"+image_name)
 	return res
-	
+
+def readIndex(flag=False):
+	imginfile = open("./pimg/index.txt", "r")
+	imgindex = int(imginfile.read())
+	imginfile.close()
+	if flag:
+		imginfile = open("./pimg/index.txt", "w")
+		imgindex += 1
+		imginfile.write(str(imgindex))
+		imginfile.close()
+	return imgindex
+
+def reserve(datas):
+	rarray = []
+	rf = open("./db/db.txt", "r")
+	read = rf.read()
+	rf.close()
+	read = read.split("\n")
+	for r in read:
+		tmp = {}
+		r = r.split('\t')
+#			print(r)
+		try:
+			for _r in r:
+				rr = _r.split("=")
+				tmp[rr[0]] = rr[1]
+			rarray.append(tmp.copy())
+		except:
+			pass
+
+
+	s, n, d, t, p = datas["salon"], datas["name"], datas["day"], datas["time"], datas["phone"]
+
+	sucFile = open("./templates/result_success.html", "rb")
+	res = sucFile.read()
+	sucFile.close()
+	header = "HTTP/1.1 200 OK\r\n"
+	flag = True
+	for i in rarray:
+		if i["day"] == d and i["time"] == t:
+			if i["phone"] == p:
+				failFile = open("./templates/result_fail.html", "rb")
+				res = failFile.read()
+				failFile.close()
+				header = "HTTP/1.1 500 ERROR OCCURED\r\n"
+				flag = False
+			elif i["salon"] == s:
+				failFile = open("./templates/result_fail.html", "rb")
+				res = failFile.read()
+				header = "HTTP/1.1 500 ERROR OCCURED\r\n"
+				failFile.close()
+				flag = False
+	if flag:
+		wf = open("./db/db.txt", "a")
+		towrite = "salon="+s + "\tname=" + n + "\tday=" + d + "\ttime=" + t + "\tphone=" + p + "\n"
+		wf.write(towrite)
+		wf.close()
+	return (header, res)
 
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
-	
+
 	tmp = clientSocket.recv(BFSIZE)
-#	print(tmp)
+	print(tmp)
 	try:
 		size = int(tmp)
 		cnt = int(size / BFSIZE)
 		if size % BFSIZE != 0:
-#			print('hi')
 			cnt += 1
-		tmp = b'' 
+#		cnt += 1
+		tmp = b''
 		size = 0
 		for i in range(cnt):
 			time.sleep(0.08)
@@ -100,20 +157,21 @@ def tcpHandler(clientSocket, addr):
 			size += len(ttmp)
 			tmp += ttmp
 			print(i, cnt, len(ttmp))
-#		print("size: " + str(size))
-		imgindex += 1
+		print("size: " + str(size))
+		imgindex = readIndex(True)
 		wf = open("./pimg/capture" + str(imgindex) + ".jpg", "wb")
 		wf.write(tmp)
 		wf.close()
 		header = "HTTP/1.1 200 OK\r\n"
 		res = "SUCCESS"
 		clientSocket.sendall((header+res).encode())
+		clientSocket.close()
 
 		return
 
 	except:
 		print("except")
-#		print(sys.exc_info())
+#	print(sys.exc_info())
 
 	req_in = tmp.decode("utf-8")
 
@@ -144,7 +202,7 @@ def tcpHandler(clientSocket, addr):
 			if req_in[i] == '':
 				dataIndex = i+1
 				break
-		f = req_in[0].split()[1] 
+		f = req_in[0].split()[1]
 		f = parse.unquote(f)
 		data = req_in[dataIndex]
 #		data = parse.unquote(data)
@@ -165,6 +223,7 @@ def postHandler(f, data, clientSocket):
 		datas[tmp_d[0]] = tmp_d[1]
 
 	if f == "reservation":
+		'''
 		rarray = []
 		rf = open("./db/db.txt", "r")
 		read = rf.read()
@@ -181,8 +240,8 @@ def postHandler(f, data, clientSocket):
 				rarray.append(tmp.copy())
 			except:
 				pass
-		
-		
+
+
 		s, n, d, t, p = datas["salon"], datas["name"], datas["day"], datas["time"], datas["phone"]
 
 		sucFile = open("./templates/result_success.html", "rb")
@@ -204,12 +263,10 @@ def postHandler(f, data, clientSocket):
 					header = "HTTP/1.1 500 ERROR OCCURED\r\n"
 					failFile.close()
 					flag = False
-
-		if flag:
-			wf = open("./db/db.txt", "a")
-			towrite = "salon="+s + "\tname=" + n + "\tday=" + d + "\ttime=" + t + "\tphone=" + p + "\n"
-			wf.write(towrite)
-			wf.close()
+		'''
+		
+		header, res = reserve(datas)
+		
 	elif f == "upload":
 #	try:
 		wf = open("./pimg/" + datas["hi"], "wb")
@@ -234,9 +291,9 @@ def postHandler(f, data, clientSocket):
 #	print('post')
 #	print(res)
 	clientSocket.sendall(res)
-	return 	
-	
-	
+	return
+
+
 def getHandler(f, clientSocket):
 
 	if f == "":
@@ -247,7 +304,7 @@ def getHandler(f, clientSocket):
 		ff.close()
 		j = json.dumps({'foo':'my json', 'a':fi.decode('utf-8')})
 		header = "HTTP/1.1 200 OK\r\n"
-		header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
+		header += "Keep-Alive: timeout=10, max=100\r\n" 
 		header += "Connection: keep-alive\r\n"
 		header += "Content-Type: application/json\r\n"
 		header += "\r\n"
@@ -256,35 +313,36 @@ def getHandler(f, clientSocket):
 		return
 
 
-	
+
 	p = ""
 	header = "HTTP/1.1 200 OK\r\n"
-	header += "Keep-Alive: timeout=10, max=100\r\n" #timeout=10, max=100\r\n"
+	header += "Keep-Alive: timeout=10, max=100\r\n" 
 	header += "Connection: keep-alive\r\n"
-
-	if '.' not in f:
-		if f != "reservation":
-			f += ".html"
 	if '?' in f:
 		f = f.split("?")
 		p = f[1]
 		f = f[0]
 		p = p.split("&")
 
+	if '.' not in f:
+		if f != "reservation":
+			f += ".html"
+
+
 	if re.search('.html', f, re.IGNORECASE):
 		f = "./templates/" + f
 		mimetype = "text/html"
-	elif re.search('.xml', f, re.IGNORECASE):		
+	elif re.search('.xml', f, re.IGNORECASE):
 		mimetype = "text/xml"
 	elif re.search('.css', f, re.IGNORECASE):
 		mimetype = "text/css"
 	elif re.search('.js', f, re.IGNORECASE):
 		mimetype = "text/javascript"
-	elif re.search('.jpg', f, re.IGNORECASE):		
+	elif re.search('.jpg', f, re.IGNORECASE):
 		mimetype = "image/jpg"
-	elif re.search('.jpeg', f, re.IGNORECASE):		
+	elif re.search('.jpeg', f, re.IGNORECASE):
 		mimetype = "image/jpeg"
-	elif re.search('.png', f, re.IGNORECASE):		
+	elif re.search('.png', f, re.IGNORECASE):
 		mimetype = "image/png"
 		header += "Content-Type: image/png\r\n"
 	elif re.search('mp4', f, re.IGNORECASE):
@@ -302,13 +360,23 @@ def getHandler(f, clientSocket):
 		print(f + " is not found.")
 		clientSocket.sendall(header.encode('utf-8'))
 		return
-		
+
 
 	res = rf.read()
-	if len(p) > 1 or (len(p) == 1 and p != ""):
+	print(p)
+	if len(p) == 1 and p != "":
 		res = res.decode('utf-8')
 		res = res.replace("지니살롱", p[0])
 		res = res.encode('utf-8')
+	elif len(p) == 5:
+#res = res.decode('utf-8')
+		datas = {}
+		for d in p:
+			tmp_d = d.split("=", 1)
+			datas[tmp_d[0]] = tmp_d[1]
+		header, res = reserve(datas)
+
+
 	if re.search("recommendation.html", f, re.IGNORECASE):
 		res = camtorecommend_page()
 		res = res.encode("utf-8")
@@ -331,19 +399,19 @@ def dosHandler():
 				blockedip.append(i)
 			else:
 				recentip[i] = 0
-	
+
 
 if __name__ == "__main__":
 	tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, BFSIZE)  
+	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, BFSIZE)
 	host = socket.gethostbyname(socket.gethostname())
 #	tcpSocket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	tcpSocket.bind(("0.0.0.0", int(sys.argv[1])))
 	tcpSocket.listen(100)
 
-	dosThread = threading.Thread(target=dosHandler, args=())
-	dosThread.start()
+#	dosThread = threading.Thread(target=dosHandler, args=())
+#	dosThread.start()
 	while True:
 		(cSocket, addr) = tcpSocket.accept()
 		tcpThread = threading.Thread(target=tcpHandler, args=(cSocket,addr ))
