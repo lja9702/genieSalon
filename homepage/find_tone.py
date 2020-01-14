@@ -224,7 +224,7 @@ class DetectTone:
 #         return render_template('/index.html',recoColorValueHtml=recoColorValue, recoColorNameHtml=recoColorName, toneHtml=tone)
 #
 
-
+homepage/templates/recomme
 #todo=DetectTone()
 #print(todo.detectowntone())
 # print(todo.send_tone_to_html())

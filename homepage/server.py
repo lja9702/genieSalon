@@ -4,12 +4,94 @@ import threading
 import time
 import re
 import json
+from detect_shape import DetectShape
+from detect_gender import DetectGender
+from find_tone import DetectTone
+from recommend_hair import MatchHair
 from urllib import parse
+import random
+import os
 
 recentip = {}
 blockedip = []
 BFSIZE = 4096
 imgindex = -1
+
+faceshapes = {"ang":"각진 얼굴", "egg":"계란형 얼굴", "round":"둥근형 얼굴", "long":"긴 얼굴", "tri":"역삼각형 얼굴"}
+
+
+def find_celeb():
+	global detect_shape, detect_gender
+	global imgindex
+	imgindex = readIndex()
+
+	shape = detect_shape.shape
+	gender = detect_gender.gender
+
+	print("shape: %s gender: %s" %(shape, gender))
+
+	img_path = "static/img/celeb/" + gender + "/" + shape
+	#특정 얼굴형 젠더에서 랜덤으로 사진 가져오기
+	_file = random.choice([
+    x for x in os.listdir(img_path)
+    if os.path.isfile(os.path.join(img_path, x)) and
+    x.endswith('.jpg')])
+	celeb_src = img_path + "/" + _file
+
+	return [str(celeb_src), _file[:-4]]
+
+
+
+
+def camtorecommend_page():
+	global detect_shape, detect_gender
+
+	imgindex = readIndex()
+	detect_shape = DetectShape(imgindex)
+	detect_gender = DetectGender(imgindex)
+	detect_shape.measure_face_shape()
+	detect_gender.detectowngender()
+	celeb_src , celeb_name = find_celeb()
+	find_tone = DetectTone(imgindex)
+	color_list, cool = find_tone.detectowntone()
+	warm = str(100 - int(cool))
+	cool = str(int(cool))
+
+	match_hair = MatchHair()
+	print("shape: %s gender: %s" %(detect_shape.shape, detect_gender.gender))
+	hair_list = match_hair.hairstyle_src_list(shape = detect_shape.shape, gender = detect_gender.gender)
+	resfile = open("./templates/recommendation.html", 'r')
+	res = resfile.read()
+	resfile.close()
+	image_name = "./pimg/capture" + str(imgindex) + ".jpg"
+	res = res.replace("{{celebSrc}}", celeb_src)
+	res = res.replace("{{celebName}}", celeb_name)
+	print(len(color_list[0]), type(color_list[0][0]))
+	for i in range(5):
+		try:
+			res = res.replace("{{colorList["+str(i)+"][1]}}", color_list[i][1])
+			res = res.replace("{{colorList["+str(i)+"][0]}}", color_list[i][0])
+		except:
+			pass
+	res = res.replace("{{cool}}", str(cool))
+	res = res.replace("{{warm}}", str(warm))
+	res = res.replace("{{shape}}", faceshapes[detect_shape.shape])
+	for i in range(4):
+		res = res.replace("{{hairList["+str(i)+"]}}", hair_list[i])
+	res = res.replace("{{imageName}}", "../../"+image_name)
+	return res
+
+def readIndex(flag=False):
+	imginfile = open("./pimg/index.txt", "r")
+	imgindex = int(imginfile.read())
+	imginfile.close()
+	if flag:
+		imginfile = open("./pimg/index.txt", "w")
+		imgindex += 1
+		imginfile.write(str(imgindex))
+		imginfile.close()
+	return imgindex
+
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
@@ -20,27 +102,25 @@ def tcpHandler(clientSocket, addr):
 		size = int(tmp)
 		cnt = int(size / BFSIZE)
 		if size % BFSIZE != 0:
-			print('hi')
 			cnt += 1
+#		cnt += 1
 		tmp = b''
 		size = 0
 		for i in range(cnt):
-#		tmp = clientSocket.recvall()
+			time.sleep(0.08)
 			ttmp = clientSocket.recv(BFSIZE)
-#		print("ssss")
-#		print(len(ttmp))
-#		print("eeee")
 			size += len(ttmp)
 			tmp += ttmp
-			print(i, cnt)
+			print(i, cnt, len(ttmp))
 		print("size: " + str(size))
-		imgindex += 1
+		imgindex = readIndex(True)
 		wf = open("./pimg/capture" + str(imgindex) + ".jpg", "wb")
 		wf.write(tmp)
 		wf.close()
 		header = "HTTP/1.1 200 OK\r\n"
 		res = "SUCCESS"
 		clientSocket.sendall((header+res).encode())
+		clientSocket.close()
 
 		return
 
@@ -58,11 +138,11 @@ def tcpHandler(clientSocket, addr):
 	except:
 		recentip[addr[0]] = 1
 	'''
-	print(recentip)
-	print(req_in)
-	print()
-	print()
-	print()
+#	print(recentip)
+#	print(req_in)
+#	print()
+#	print()
+#	print()
 
 	if req_in[:3] == "GET":
 		req_in = req_in.split("GET")
@@ -86,8 +166,8 @@ def tcpHandler(clientSocket, addr):
 
 def postHandler(f, data, clientSocket):
 
-	print("post")
-	print(f)
+#	print("post")
+#	print(f)
 #	print(data)
 	if f != "upload":
 		data = parse.unquote(data)
@@ -106,7 +186,7 @@ def postHandler(f, data, clientSocket):
 		for r in read:
 			tmp = {}
 			r = r.split('\t')
-			print(r)
+#			print(r)
 			try:
 				for _r in r:
 					rr = _r.split("=")
@@ -160,8 +240,11 @@ def postHandler(f, data, clientSocket):
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "\r\n"
 	header = header.encode('utf-8')
-	res = header + res.encode('utf-8')
-	print('post')
+	try:
+		res = header + res.encode('utf-8')
+	except:
+		res = header + res
+#	print('post')
 #	print(res)
 	clientSocket.sendall(res)
 	return
@@ -204,33 +287,30 @@ def getHandler(f, clientSocket):
 	if re.search('.html', f, re.IGNORECASE):
 		f = "./templates/" + f
 		mimetype = "text/html"
+<<<<<<< HEAD
 	elif re.search('.xml', f, re.IGNORECASE):
 #		f = "./static/xml/" + f
+=======
+	elif re.search('.xml', f, re.IGNORECASE):
+>>>>>>> d1f713e8fee7c3e88d231fec4710aaec975b71d2
 		mimetype = "text/xml"
 	elif re.search('.css', f, re.IGNORECASE):
-#		f = "./static/css/" + f
 		mimetype = "text/css"
 	elif re.search('.js', f, re.IGNORECASE):
-#		f = "./static/js/" + f
 		mimetype = "text/javascript"
 	elif re.search('.jpg', f, re.IGNORECASE):
-#		f = "./statc/resource/" + f
 		mimetype = "image/jpg"
 	elif re.search('.jpeg', f, re.IGNORECASE):
-#		f = "./static/resource/" + f
 		mimetype = "image/jpeg"
 	elif re.search('.png', f, re.IGNORECASE):
-#		f = "./static/resource/" + f
 		mimetype = "image/png"
 		header += "Content-Type: image/png\r\n"
 	elif re.search('mp4', f, re.IGNORECASE):
-#		f = "./static/resource/" + f
 		mimetype = "video/mp4"
 	elif re.search('.ico', f, re.IGNORECASE):
 		f = "./static/img/" + f
 		mimetype = "image/vnd.microsoft.icon"
 	else:
-#		f = "./static/resource/" + f
 		mimetype = "Application/octet-stream"
 
 	try:
@@ -247,9 +327,13 @@ def getHandler(f, clientSocket):
 		res = res.decode('utf-8')
 		res = res.replace("지니살롱", p[0])
 		res = res.encode('utf-8')
+	if re.search("recommendation.html", f, re.IGNORECASE):
+		res = camtorecommend_page()
+		res = res.encode("utf-8")
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "Content-Type: " + mimetype + "\r\n"
 	header += "\r\n"
+
 
 	res = header.encode("utf-8") + res
 	clientSocket.sendall(res)
@@ -269,14 +353,15 @@ def dosHandler():
 
 if __name__ == "__main__":
 	tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, BFSIZE)
 	host = socket.gethostbyname(socket.gethostname())
 #	tcpSocket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	tcpSocket.bind(("0.0.0.0", int(sys.argv[1])))
 	tcpSocket.listen(100)
 
-	dosThread = threading.Thread(target=dosHandler, args=())
-	dosThread.start()
+#	dosThread = threading.Thread(target=dosHandler, args=())
+#	dosThread.start()
 	while True:
 		(cSocket, addr) = tcpSocket.accept()
 		tcpThread = threading.Thread(target=tcpHandler, args=(cSocket,addr ))

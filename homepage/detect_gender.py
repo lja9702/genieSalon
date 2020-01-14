@@ -5,8 +5,9 @@ import cv2, glob, dlib
 
 class DetectGender():
 
-    def __init__(self):
+    def __init__(self, index):
 
+        self.index = index
         self.gender_list = ['Male', 'Female']
 
         self.detector = dlib.get_frontal_face_detector()
@@ -19,7 +20,7 @@ class DetectGender():
         #self.img = glob.glob('static/img/capture.jpg')
 
     def detectowngender(self):
-        img = cv2.imread('static/img/capture.jpg')
+        img = cv2.imread('./pimg/capture'+str(self.index)+'.jpg')
 
         faces = self.detector(img)
 

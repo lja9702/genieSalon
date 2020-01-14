@@ -13,7 +13,6 @@ def sendImage(params=b""):
   s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
   s.connect((HOST, PORT)) 
   size = len(params)
-  print(size)
   s.send(str(size).encode()) 
   time.sleep(0.1)
   s.send(params)

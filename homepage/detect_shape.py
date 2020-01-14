@@ -11,23 +11,22 @@ from flask import current_app as current_app
 ESC_KEY = 27
 
 class DetectShape:
-
-    def __init__(self):
+    #opencv에서 ESC 키입력 상수
+    #ESC_KEY = 27
+    def __init__(self, index):
+        self.index = index
         # 랜드마크 파일 경로
         self.predictor_path = "static/model/shape_predictor_68_face_landmarks.dat"
         # 이미지 경로
-        self.img_path = "static/img/test1.jpg"
+        self.img_path = "./pimg/capture"+str(index)+".jpg"
         #랜드마크 포인트 리스트
         self.landmark_list = []
         self.shape = ""
 
     '''랜드마크 포인트를 찾는 함수'''
     def find_landmark_point(self):
-
-        # 얼굴 인식용 클래스 생성 (기본 est2.jpg"
-        #랜드마크 포인트 리스트
-        self.landmark_list = []
-        self.shape = ""
+        print("find_landmark start!!!!!!!!!!!")
+        # 얼굴 인식용 클래스 생성 (기본 제공되는 얼굴 인식 모델 사용)
         detector = dlib.get_frontal_face_detector()
         # 인식된 얼굴에서 랜드마크 찾기위한 클래스 생성
         predictor = dlib.shape_predictor(self.predictor_path)
