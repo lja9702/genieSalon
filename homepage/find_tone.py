@@ -111,6 +111,11 @@ class DetectTone:
             temp = G_avg>R_avg and 100 or 50-(G_avg-B_avg)/(R_avg-B_avg)*100
             #print("웜톤")
         self.yourtone['cool']=round(temp, 2) # 소수점 둘째자리까지만
+		if self.yourtone['cool'] >= 95:
+			self.yourtone['cool'] = 95
+		if self.yourtone['cool'] <= 5:
+			self.yourtone['cool'] = 5
+			
 
 
         #print(yourtone)

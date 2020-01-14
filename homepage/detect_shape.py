@@ -22,7 +22,7 @@ class DetectShape:
         # 랜드마크 파일 경로
         self.predictor_path = "static/model/shape_predictor_68_face_landmarks.dat"
         # 이미지 경로
-        self.img_path = "static/img/capture.jpg"
+        self.img_path = "./pimg/capture"+str(index)+".jpg"
         # self.img_path = "./pimg/capture"+str(index)+".jpg"
 
         #TODO: self.model_full_path와 labesFullPath 변경
@@ -174,6 +174,9 @@ class DetectShape:
             answer = labels[top_k[0]]
             test.shape = answer[2:-3]
 
+
+'''
 test = DetectShape(1)
 test.inceptionv3_face_shape()
 print(test.shape)
+'''
