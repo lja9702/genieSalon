@@ -17,6 +17,8 @@ blockedip = []
 BFSIZE = 4096
 imgindex = -1
 
+faceshapes = {"ang":"각진 얼굴", "egg":"계란형 얼굴", "round":"둥근형 얼굴", "long":"긴 얼굴", "tri":"역삼각형 얼굴"}
+
 
 def find_celeb():
 	global detect_shape, detect_gender
@@ -63,13 +65,15 @@ def camtorecommend_page():
 	res = res.replace("{{celebSrc}}", celeb_src)
 	res = res.replace("{{celebName}}", celeb_name)
 	print(len(color_list[0]), type(color_list[0][0]))
-	for i in range(4):
+	for i in range(5):
 		try:
 			res = res.replace("{{colorList["+str(i)+"][1]}}", color_list[i][1])
+			res = res.replace("{{colorList["+str(i)+"][0]}}", color_list[i][0])
 		except:
 			pass
 	res = res.replace("{{cool}}", str(cool))
 	res = res.replace("{{warm}}", str(warm))
+	res = res.replace("{{shape}}", faceshapes[detect_shape.shape])
 	for i in range(4):
 		res = res.replace("{{hairList["+str(i)+"]}}", hair_list[i])
 	res = res.replace("{{imageName}}", "../../"+image_name)
@@ -81,22 +85,22 @@ def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
 	
 	tmp = clientSocket.recv(BFSIZE)
-	print(tmp)
+#	print(tmp)
 	try:
 		size = int(tmp)
 		cnt = int(size / BFSIZE)
 		if size % BFSIZE != 0:
-			print('hi')
+#			print('hi')
 			cnt += 1
 		tmp = b'' 
 		size = 0
 		for i in range(cnt):
-			time.sleep(0.1)
+			time.sleep(0.08)
 			ttmp = clientSocket.recv(BFSIZE)
 			size += len(ttmp)
 			tmp += ttmp
 			print(i, cnt, len(ttmp))
-		print("size: " + str(size))
+#		print("size: " + str(size))
 		imgindex += 1
 		wf = open("./pimg/capture" + str(imgindex) + ".jpg", "wb")
 		wf.write(tmp)
@@ -109,7 +113,7 @@ def tcpHandler(clientSocket, addr):
 
 	except:
 		print("except")
-		print(sys.exc_info())
+#		print(sys.exc_info())
 
 	req_in = tmp.decode("utf-8")
 
@@ -121,11 +125,11 @@ def tcpHandler(clientSocket, addr):
 	except:
 		recentip[addr[0]] = 1
 	'''
-	print(recentip)
-	print(req_in)
-	print()
-	print()
-	print()
+#	print(recentip)
+#	print(req_in)
+#	print()
+#	print()
+#	print()
 
 	if req_in[:3] == "GET":
 		req_in = req_in.split("GET")
@@ -149,8 +153,8 @@ def tcpHandler(clientSocket, addr):
 
 def postHandler(f, data, clientSocket):
 
-	print("post")
-	print(f)
+#	print("post")
+#	print(f)
 #	print(data)
 	if f != "upload":
 		data = parse.unquote(data)
@@ -169,7 +173,7 @@ def postHandler(f, data, clientSocket):
 		for r in read:
 			tmp = {}
 			r = r.split('\t')
-			print(r)
+#			print(r)
 			try:
 				for _r in r:
 					rr = _r.split("=")
@@ -227,7 +231,7 @@ def postHandler(f, data, clientSocket):
 		res = header + res.encode('utf-8')
 	except:
 		res = header + res
-	print('post')
+#	print('post')
 #	print(res)
 	clientSocket.sendall(res)
 	return 	
@@ -331,6 +335,7 @@ def dosHandler():
 
 if __name__ == "__main__":
 	tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, BFSIZE)  
 	host = socket.gethostbyname(socket.gethostname())
 #	tcpSocket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 	tcpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
