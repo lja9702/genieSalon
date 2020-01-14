@@ -23,7 +23,7 @@ faceshapes = {"ang":"각진 얼굴", "egg":"계란형 얼굴", "round":"둥근�
 def find_celeb():
 	global detect_shape, detect_gender
 	global imgindex
-
+	imgindex = readIndex()
 
 	shape = detect_shape.shape
 	gender = detect_gender.gender
@@ -45,6 +45,8 @@ def find_celeb():
 
 def camtorecommend_page():
 	global detect_shape, detect_gender
+
+	imgindex = readIndex()
 	detect_shape = DetectShape(imgindex)
 	detect_gender = DetectGender(imgindex)
 	detect_shape.measure_face_shape()
@@ -79,19 +81,29 @@ def camtorecommend_page():
 	res = res.replace("{{imageName}}", "../../"+image_name)
 	return res
 	
+def readIndex(flag=False):
+	imginfile = open("./pimg/index.txt", "r")
+	imgindex = int(imginfile.read())
+	imginfile.close()
+	if flag:
+		imginfile = open("./pimg/index.txt", "w")
+		imgindex += 1
+		imginfile.write(str(imgindex))
+		imginfile.close()
+	return imgindex
 
 
 def tcpHandler(clientSocket, addr):
 	global recentip, blockedip, BFSIZE, imgindex
 	
 	tmp = clientSocket.recv(BFSIZE)
-#	print(tmp)
+	print(tmp)
 	try:
 		size = int(tmp)
 		cnt = int(size / BFSIZE)
 		if size % BFSIZE != 0:
-#			print('hi')
 			cnt += 1
+#		cnt += 1
 		tmp = b'' 
 		size = 0
 		for i in range(cnt):
@@ -100,20 +112,21 @@ def tcpHandler(clientSocket, addr):
 			size += len(ttmp)
 			tmp += ttmp
 			print(i, cnt, len(ttmp))
-#		print("size: " + str(size))
-		imgindex += 1
+		print("size: " + str(size))
+		imgindex = readIndex(True)
 		wf = open("./pimg/capture" + str(imgindex) + ".jpg", "wb")
 		wf.write(tmp)
 		wf.close()
 		header = "HTTP/1.1 200 OK\r\n"
 		res = "SUCCESS"
 		clientSocket.sendall((header+res).encode())
+		clientSocket.close()
 
 		return
 
 	except:
 		print("except")
-#		print(sys.exc_info())
+		print(sys.exc_info())
 
 	req_in = tmp.decode("utf-8")
 
@@ -342,8 +355,8 @@ if __name__ == "__main__":
 	tcpSocket.bind(("0.0.0.0", int(sys.argv[1])))
 	tcpSocket.listen(100)
 
-	dosThread = threading.Thread(target=dosHandler, args=())
-	dosThread.start()
+#	dosThread = threading.Thread(target=dosHandler, args=())
+#	dosThread.start()
 	while True:
 		(cSocket, addr) = tcpSocket.accept()
 		tcpThread = threading.Thread(target=tcpHandler, args=(cSocket,addr ))
