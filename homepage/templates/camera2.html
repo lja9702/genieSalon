@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pi Video Surveillance</title>
+  </head>
+  <body>
+    <img width = 100% height = 100% src="{{ url_for('video_feed') }}">
+  </body>
+</html>
+<script>
+// XMLHttpRequest 객체의 생성
+  var timer = setInterval(function(){
+    var xhr = new XMLHttpRequest();
+    // 비동기 방식으로 Request를 오픈한다
+    xhr.open('GET', 'camera/isFinished');
+    // Request를 전송한다
+    xhr.send();
+
+    xhr.onreadystatechange = function () {
+      // 서버 응답 완료 && 정상 응답
+      if (xhr.readyState !== XMLHttpRequest.DONE) return;
+
+      if (xhr.status === 200) {
+        console.log(xhr.responseText);
+        if(xhr.responseText === "True")
+          window.location.href="/recommendation";
+          return ;
+      }
+    };
+  }, 1000);
+</script>
