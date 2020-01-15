@@ -378,7 +378,12 @@ def getHandler(f, clientSocket):
 
 
 	if re.search("recommendation.html", f, re.IGNORECASE):
-		res = camtorecommend_page()
+		try:
+			res = camtorecommend_page()
+		except:
+			_file = open("./template/recog_fail.html", "rb")
+			res = _file.read()
+			_file.close()
 		res = res.encode("utf-8")
 	header += "Content-Length: "+str(len(res))+"\r\n"
 	header += "Content-Type: " + mimetype + "\r\n"
