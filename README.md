@@ -13,7 +13,10 @@ OS: Ubuntu 16.04 LTS
 테스트 기기: 라즈베리파이3 B+
 개발 언어: Python 3.5
 
- --------------------READ ME --------------------
+
+<br>
+
+<h1> READ ME </h1>
 
 설치 해야할 파일목록 :
 
@@ -30,11 +33,11 @@ pip install glob
 pip install flask
 pip install imutils
 
- ----------컴퓨에서 실행시  사용 방법 ----------
+<h2> 컴퓨에서 실행시  사용 방법 </h2>
 python homepage/webstreaming.py --ip 0.0.0.0 --port 8000
 -> webstreaming을 사용해서 실행
 
- ----------makers kit에서 실행시  사용 방법 ----------
+ <h2> makers kit에서 실행시  사용 방법 </h2>
 
 1.genie_salon.py   를  열 고  run(재생)을 시킵니다.
 
