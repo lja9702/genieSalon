@@ -1,4 +1,17 @@
 # genieSalon
+<h1> 실행 환경 </h1>
+
+<h2> 서버 </h2>
+OS: Ubuntu 16.04 LTS
+개발 언어: Python 3.5
+
+<h2> 웹 앱 </h2>
+테스트 환경: Chrome browser, Eclipse
+개발 언어: HTML, CSS, Javascript
+
+<h2> 클라이언트 </h2>
+테스트 기기: 라즈베리파이3 B+
+개발 언어: Python 3.5
 
  --------------------READ ME --------------------
 
